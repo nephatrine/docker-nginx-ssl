@@ -1,0 +1,39 @@
+#!/usr/bin/with-contenv bash
+
+DNSADDR=${DNSADDR:-"8.8.8.8 8.8.4.4"}
+SSLPRIMARY=`echo $SSLDOMAINS | tr ',' ' ' | awk '{print $1}'`
+
+if [[ ! -f /mnt/config/etc/mime.types ]]; then
+  s6-setuidgid guardian cp /etc/nginx/mime.types /mnt/config/etc/mime.types
+fi
+
+if [[ ! -f /mnt/config/etc/nginx.conf ]]; then
+  sed -e "s/8.8.8.8 8.8.4.4/${DNSADDR}/g" /etc/nginx/nginx.conf | s6-setuidgid guardian tee /mnt/config/etc/nginx.conf
+fi
+
+if [[ ! -d /mnt/config/etc/nginx.d ]]; then
+  s6-setuidgid guardian mkdir -p /mnt/config/etc/nginx.d
+  if [[ ! -z "${SSLPRIMARY}" ]]; then
+    sed -e "s/REPLACE_WITH_DOMAIN_NAME/${SSLPRIMARY}/g" /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL://g' | sed -e 's/#NOSSL:/#/g' | s6-setuidgid guardian tee /mnt/config/www/default/default.conf
+  else
+    sed -e 's/#NOSSL://g' /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL:/#/g' | s6-setuidgid guardian tee /mnt/config/www/default/default.conf
+  fi
+  s6-setuidgid guardian cp -n /etc/nginx/nginx.d/* /mnt/config/etc/nginx.d/
+fi
+
+if [[ ! -d /mnt/config/log ]]; then
+  s6-setuidgid guardian mkdir -p /mnt/config/log
+fi
+
+if [[ ! -d /mnt/config/ssl ]]; then
+  s6-setuidgid guardian mkdir -p /mnt/config/ssl
+fi
+
+if [[ ! -f /mnt/config/ssl/dhparam.pem ]]; then
+  s6-setuidgid guardian openssl dhparam -out /mnt/config/ssl/dhparam.pem 4096
+fi
+
+if [[ ! -d /mnt/config/www ]]; then
+  s6-setuidgid guardian mkdir -p /mnt/config/www/default
+  s6-setuidgid guardian cp -n /var/www/html/* /mnt/config/www/default/
+fi

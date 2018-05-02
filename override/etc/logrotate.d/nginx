@@ -1,0 +1,4 @@
+/mnt/config/log/nginx-access.log /mnt/config/log/nginx-error.log {
+	missingok
+	notifempty
+}
