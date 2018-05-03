@@ -7,7 +7,9 @@ RUN echo "====== PREPARE BASIC UTILITIES ======" \
  && mkdir -p /var/cache/nginx \
  \
  && echo "====== PREPARE BUILD TOOLS ======" \
- && apk add --virtual .build-nginx gcc gd-dev geoip-dev git libatomic_ops-dev libc-dev libressl-dev libxml2-dev libxslt-dev linux-headers make pcre-dev zlib-dev \
+ && apk add --virtual .build-nginx gcc gd-dev geoip-dev git libatomic_ops-dev \
+  libc-dev libressl-dev libxml2-dev libxslt-dev linux-headers make pcre-dev \
+  zlib-dev \
  \
  && echo "====== COMPILE NGINX ======" \
  && cd /usr/src \
