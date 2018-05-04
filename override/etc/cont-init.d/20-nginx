@@ -14,9 +14,9 @@ fi
 if [[ ! -d /mnt/config/etc/nginx.d ]]; then
   s6-setuidgid guardian mkdir -p /mnt/config/etc/nginx.d
   if [[ ! -z "${SSLPRIMARY}" ]]; then
-    sed -e "s/REPLACE_WITH_DOMAIN_NAME/${SSLPRIMARY}/g" /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL://g' | sed -e 's/#NOSSL:/#/g' | s6-setuidgid guardian tee /mnt/config/www/default/default.conf  | grep -v ""
+    sed -e "s/REPLACE_WITH_DOMAIN_NAME/${SSLPRIMARY}/g" /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL://g' | sed -e 's/#NOSSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.d/default.conf  | grep -v ""
   else
-    sed -e 's/#NOSSL://g' /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL:/#/g' | s6-setuidgid guardian tee /mnt/config/www/default/default.conf  | grep -v ""
+    sed -e 's/#NOSSL://g' /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.d/default.conf  | grep -v ""
   fi
   s6-setuidgid guardian cp -n /etc/nginx/nginx.d/* /mnt/config/etc/nginx.d/
 fi
