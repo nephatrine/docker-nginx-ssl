@@ -18,7 +18,7 @@ if [[ ! -f /mnt/config/etc/nginx.conf ]]; then
   else
     sed -e "s/8.8.8.8 8.8.4.4/${DNSADDR}/g" /etc/nginx/nginx.conf | sed -e 's/#NOSSL://g' | sed -e 's/#SSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.conf  | grep -v ""
   fi
-  if ! grep -q 'REPLACE_WITH_TRUSTED_PROXY_SUBNET' /etc/nginx/nginx.d/default.conf;
+  if ! grep -q 'REPLACE_WITH_TRUSTED_PROXY_SUBNET' /etc/nginx/nginx.d/default.conf; then
     s6-setuidgid guardian sed -i -e 's/#NOPROXY://g' /mnt/config/etc/nginx.conf
     s6-setuidgid guardian sed -i -e 's/#PROXY:/#/g' /mnt/config/etc/nginx.conf
   else
