@@ -38,11 +38,11 @@ if [[ ! -d /mnt/config/etc/nginx.d ]]; then
   s6-setuidgid guardian cp -n /etc/nginx/nginx.d/* /mnt/config/etc/nginx.d/
 fi
 
-if [[ ! -d /mnt/config/ssl ]]; then
-  s6-setuidgid guardian mkdir -p /mnt/config/ssl
-fi
-
 if [[ ! -z "${SSLPRIMARY}" ]]; then
+  if [[ ! -d /mnt/config/ssl ]]; then
+    s6-setuidgid guardian mkdir -p /mnt/config/ssl
+  fi
+
   if [[ ! -f /mnt/config/ssl/dhparam.pem ]]; then
     s6-setuidgid guardian openssl dhparam -out /mnt/config/ssl/dhparam.pem 4096
   fi
