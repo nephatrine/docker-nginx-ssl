@@ -1,7 +1,11 @@
 #!/usr/bin/with-contenv bash
 
 DNSADDR=${DNSADDR:-"8.8.8.8 8.8.4.4"}
+ADMINIP=${ADMINIP:-"127.0.0.1"}
+TRUSTSN=${TRUSTSN:-"192.168.0.0/16"}
+
 SSLPRIMARY=`echo $SSLDOMAINS | tr ',' ' ' | awk '{print $1}'`
+DOMAINNAME=${SSLPRIMARY:-"example.net"}
 
 THISIP=`ifconfig eth0 | grep 'inet addr' | tr ':' ' ' | awk '{print $3}'`
 THISSN=`ifconfig eth0 | grep 'inet addr' | tr ':' ' ' | awk '{print $7}'`
@@ -13,29 +17,31 @@ if [[ ! -f /mnt/config/etc/mime.types ]]; then
 fi
 
 if [[ ! -f /mnt/config/etc/nginx.conf ]]; then
+  s6-setuidgid guardian cp /etc/nginx/nginx.conf /mnt/config/etc/nginx.conf
+  sed -i -e "s~8.8.8.8 8.8.4.4~${DNSADDR}~g" /mnt/config/etc/nginx.conf
+
   if [[ ! -z "${SSLPRIMARY}" ]]; then
-    sed -e "s/8.8.8.8 8.8.4.4/${DNSADDR}/g" /etc/nginx/nginx.conf | sed -e 's/#SSL://g' | sed -e 's/#NOSSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.conf  | grep -v ""
+    sed -i -e 's/#SSL://g' /mnt/config/etc/nginx.conf
   else
-    sed -e "s/8.8.8.8 8.8.4.4/${DNSADDR}/g" /etc/nginx/nginx.conf | sed -e 's/#NOSSL://g' | sed -e 's/#SSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.conf  | grep -v ""
-  fi
-  if ! grep -q 'REPLACE_WITH_TRUSTED_PROXY_SUBNET' /etc/nginx/nginx.d/default.conf; then
-    s6-setuidgid guardian sed -i -e 's/#NOPROXY:/#/g' /mnt/config/etc/nginx.conf
-    s6-setuidgid guardian sed -i -e 's/#PROXY://g' /mnt/config/etc/nginx.conf
-  else
-    s6-setuidgid guardian sed -i -e 's/#NOPROXY://g' /mnt/config/etc/nginx.conf
-    s6-setuidgid guardian sed -i -e 's/#PROXY:/#/g' /mnt/config/etc/nginx.conf
+    sed -i -e 's/#SSL:/#/g' /mnt/config/etc/nginx.conf
   fi
 fi
 
 if [[ ! -d /mnt/config/etc/nginx.d ]]; then
   s6-setuidgid guardian mkdir -p /mnt/config/etc/nginx.d
-  if [[ ! -z "${SSLPRIMARY}" ]]; then
-    sed -e "s/REPLACE_WITH_DOMAIN_NAME/${SSLPRIMARY}/g" /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL://g' | sed -e 's/#NOSSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.d/default.conf  | grep -v ""
-  else
-    sed -e 's/#NOSSL://g' /etc/nginx/nginx.d/default.conf | sed -e 's/#SSL:/#/g' | s6-setuidgid guardian tee /mnt/config/etc/nginx.d/default.conf  | grep -v ""
-  fi
-  s6-setuidgid guardian sed -i -e "s/REPLACE_WITH_TRUSTED_PROXY_SUBNET/${TRSTIP}\/${TRSTPF}/g" /mnt/config/etc/nginx.d/default.conf
   s6-setuidgid guardian cp -n /etc/nginx/nginx.d/* /mnt/config/etc/nginx.d/
+  grep -rl '127.0.0.1' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e "s/127.0.0.1/${ADMINIP}/g"
+  grep -rl 'example.net' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e "s/example.net/${DOMAINNAME}/g"
+  grep -rl 'ip_from 192.168.0.0/16' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e "s~ip_from 192.168.0.0/16~ip_from ${TRSTIP}/${TRSTPF}~g"
+  grep -rl 'allow 192.168.0.0/16' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e "s~allow 192.168.0.0/16~allow ${TRUSTSN}~g"
+
+  if [[ ! -z "${SSLPRIMARY}" ]]; then
+    grep -rl '#NOSSL:' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e 's/#NOSSL:/#/g'
+    grep -rl '#SSL:' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e 's/#SSL://g'
+  else
+    grep -rl '#NOSSL:' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e 's/#NOSSL://g'
+    grep -rl '#SSL:' /mnt/config/etc/nginx.d | xargs -n1 sed -i -e 's/#SSL:/#/g'
+  fi
 fi
 
 if [[ ! -z "${SSLPRIMARY}" ]]; then
