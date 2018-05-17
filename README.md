@@ -4,13 +4,9 @@
 
 # NGINX+SSL (Certbot/LetsEncrypt) Docker
 
-This docker is intended to be used as a forwarding proxy to access other dockers. You can certainly
-serve static content, but tools like PHP or MySQL are not included.
+This docker is intended to be used as a forwarding proxy to access other dockers. You can certainly serve static content, but tools like PHP or MySQL are not included.
 
-Certbot is installed and can request SSL certificats from LetsEncrypt on your behalf assuming you
-have entered the appropriate values. DNS challenges are not supported until I can come up with a
-good way to automate it. Unfortunately, that means wildcard certificates cannot be requested at
-this time.
+Certbot is installed and can request SSL certificats from LetsEncrypt on your behalf assuming you have entered the appropriate values. DNS challenges are not supported until I can come up with a good way to automate it. Unfortunately, that means wildcard certificates cannot be requested at this time.
 
 ## Settings
 
