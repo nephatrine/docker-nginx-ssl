@@ -74,5 +74,5 @@ RUN echo "====== PREPARE BASIC UTILITIES ======" \
   /usr/src/* \
   /var/cache/apk/*
 
-EXPOSE 80 443
+EXPOSE 80/tcp 443/tcp
 COPY override /
