@@ -1,14 +1,30 @@
 FROM nephatrine/base-alpine:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN echo "====== PREPARE BASIC UTILITIES ======" \
+RUN echo "====== RUNTIME CONFIGURATION ======" \
  && apk --update upgrade \
- && apk add certbot geoip libgd libxslt pcre \
+ && apk add \
+  certbot \
+  geoip \
+  libgd \
+  libxslt \
+  pcre \
  && mkdir -p /var/cache/nginx \
  \
- && echo "====== PREPARE BUILD TOOLS ======" \
- && apk add --virtual .build-nginx gcc gd-dev geoip-dev git libatomic_ops-dev \
-  libc-dev libressl-dev libxml2-dev libxslt-dev linux-headers make pcre-dev \
+ && echo "====== BUILD CONFIGURATION ======" \
+ && apk add --virtual .build-nginx \
+  gcc \
+  gd-dev \
+  geoip-dev \
+  git \
+  libatomic_ops-dev \
+  libc-dev \
+  libressl-dev \
+  libxml2-dev \
+  libxslt-dev \
+  linux-headers \
+  make \
+  pcre-dev \
   zlib-dev \
  \
  && echo "====== COMPILE NGINX ======" \
