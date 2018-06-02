@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv sh
+exec nginx -c /mnt/config/etc/nginx.conf;
+if [[ -f /var/log/nginx/error.log ]]; then
+  cat /var/log/nginx/error.log | tee -a /mnt/config/log/nginx-error.log
+  rm -f /var/log/nginx/error.log
+fi

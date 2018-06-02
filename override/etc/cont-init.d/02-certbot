@@ -1,15 +1,18 @@
 #!/usr/bin/with-contenv bash
 
-if [[ ! -d /mnt/config/ssl/live ]]; then
-  s6-setuidgid guardian mkdir -p /mnt/config/ssl/live
-fi
-
 if [[ ! -f /mnt/config/etc/domains-configured ]]; then
   echo "" > /mnt/config/etc/domains-configured
 fi
-
-echo "$SSLDOMAINS" > /mnt/config/etc/domains-requested
 CURDOMAINS=`head -1 /mnt/config/etc/domains-configured`
+echo "$SSLDOMAINS" > /mnt/config/etc/domains-requested
+
+if [[ -z "${SSLDOMAINS}" && -z "${CURDOMAINS}" ]]; then
+  exit
+fi
+
+if [[ ! -d /mnt/config/ssl/live ]]; then
+  s6-setuidgid guardian mkdir -p /mnt/config/ssl/live
+fi
 
 if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" ]]; then
   if [[ $(ls /mnt/config/ssl/live | wc -l) -gt 0 ]]; then

@@ -1,2 +1,0 @@
-#!/usr/bin/with-contenv sh
-exec nginx -c /mnt/config/etc/nginx.conf;
