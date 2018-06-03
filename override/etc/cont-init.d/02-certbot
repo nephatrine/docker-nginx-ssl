@@ -1,7 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-HOME=/mnt/config/home
-
 if [[ ! -f /mnt/config/etc/domains-configured ]]; then
   echo "" > /mnt/config/etc/domains-configured
 fi
