@@ -1,35 +1,20 @@
 FROM nephatrine/base-alpine:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN echo "====== RUNTIME CONFIGURATION ======" \
+RUN echo "====== INSTALL PACKAGES ======" \
  && apk --update upgrade \
- && apk add \
-  certbot \
-  geoip \
-  libgd \
-  libxslt \
-  pcre \
+ && apk add certbot geoip libgd libxslt pcre \
+ \
+ && echo "====== CONFIGURE SYSTEM ======" \
  && mkdir -p /var/cache/nginx \
  \
- && echo "====== BUILD CONFIGURATION ======" \
- && apk add --virtual .build-nginx \
-  gcc \
-  gd-dev \
-  geoip-dev \
-  git \
-  libatomic_ops-dev \
-  libc-dev \
-  libressl-dev \
-  libxml2-dev \
-  libxslt-dev \
-  linux-headers \
-  make \
-  pcre-dev \
-  zlib-dev \
+ && echo "====== INSTALL BUILD TOOLS ======" \
+ && apk add --virtual .build-nginx build-base gd-dev geoip-dev git libatomic_ops-dev libressl-dev libxml2-dev libxslt-dev linux-headers pcre-dev zlib-dev \
  \
  && echo "====== COMPILE NGINX ======" \
  && cd /usr/src \
- && git clone https://github.com/nginx/nginx.git && cd nginx \
+ && git clone https://github.com/nginx/nginx.git \
+ && cd nginx \
  && ./auto/configure \
   --prefix=/var/www \
   --sbin-path=/usr/sbin/nginx \
@@ -78,17 +63,15 @@ RUN echo "====== RUNTIME CONFIGURATION ======" \
   --with-pcre \
   --with-pcre-jit \
   --with-libatomic \
- && make -j4 && make install \
+ && make -j4 \
+ && make install \
  && strip /usr/sbin/nginx \
  && strip /usr/lib/nginx/modules/*.so \
  \
  && echo "====== CLEANUP ======" \
  && cd /usr/src \
  && apk del --purge .build-nginx \
- && rm -rf \
-  /tmp/* \
-  /usr/src/* \
-  /var/cache/apk/*
+ && rm -rf /tmp/* /usr/src/* /var/cache/apk/*
 
 EXPOSE 80/tcp 443/tcp
 COPY override /
