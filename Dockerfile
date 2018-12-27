@@ -3,7 +3,8 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
  && apk --update upgrade \
- && apk add certbot geoip libgd libxslt pcre \
+ && apk add certbot geoip libgd libxslt pcre py2-pip \
+ && pip install zope.component \
  \
  && echo "====== CONFIGURE SYSTEM ======" \
  && mkdir -p /var/cache/nginx \
