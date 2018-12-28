@@ -3,14 +3,13 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
  && apk --update upgrade \
- && apk add certbot geoip libgd libxslt pcre py2-pip \
- && pip install zope.component \
+ && apk add certbot geoip libgd libxslt pcre \
  \
  && echo "====== CONFIGURE SYSTEM ======" \
  && mkdir -p /var/cache/nginx \
  \
  && echo "====== INSTALL BUILD TOOLS ======" \
- && apk add --virtual .build-nginx build-base gd-dev geoip-dev git libatomic_ops-dev libressl-dev libxml2-dev libxslt-dev linux-headers pcre-dev zlib-dev \
+ && apk add --virtual .build-nginx build-base gd-dev geoip-dev git libatomic_ops-dev libressl-dev libxml2-dev libxslt-dev linux-headers pcre-dev py2-pip zlib-dev \
  \
  && echo "====== COMPILE NGINX ======" \
  && cd /usr/src \
@@ -68,6 +67,9 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && make install \
  && strip /usr/sbin/nginx \
  && strip /usr/lib/nginx/modules/*.so \
+ \
+ && echo "====== INSTALL ZOPE ======" \
+ && pip install zope.component \
  \
  && echo "====== CLEANUP ======" \
  && cd /usr/src \
