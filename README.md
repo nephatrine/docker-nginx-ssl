@@ -33,13 +33,17 @@ Certbot is installed and can request SSL certificats from LetsEncrypt on your be
 
 ## Variables
 
-- **ADMINIP:** Administrative Access IP
-- **DNSADDR:** Resolver IPs (Space-Delimited)
-- **PUID:** Volume Owner UID
-- **PGID:** Volume Owner GID
-- **SSLEMAIL:** LetsEncrypt Email Address
-- **SSLDOMAINS:** LetsEncrypt (Sub)domains (comma-delimited)
-- **TZ:** Time Zone
+- **PUID:** Owner UID (*1000*)
+- **PGID:** Owner GID (*100*)
+- **TZ:** Time Zone (*"America/New_York"*)
+
+- **DNSADDR:** Resolver IPs ("8.8.8.8 8.8.4.4") (IGNORED AFTER INITIAL RUN) (SPACE-DELIMITED)
+
+- **ADMINIP**: Administrator IP ("127.0.0.1") (IGNORED AFTER INITIAL RUN)
+- **TRUSTSN:** Trusted Subnet ("192.168.0.0/16") (IGNORED AFTER INITIAL RUN)
+
+- **SSLEMAIL:** LetsEncrypt Email ("")
+- **SSLDOMAINS:** LetsEncrypt Domains ("") (COMMA-DELIMITED)
 
 ## Mount Points
 
