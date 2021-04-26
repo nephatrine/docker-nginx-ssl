@@ -1,50 +1,84 @@
-[Git Repo](https://code.nephatrine.net/nephatrine/docker-nginx-ssl) |
-[DockerHub](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
-[unRAID Template](https://github.com/nephatrine/unraid-docker-templates)
+[Git](https://code.nephatrine.net/nephatrine/docker-nginx-ssl) |
+[Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
+[unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
-# NGINX Application Container
+[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nginx-ssl/status.svg?ref=refs/heads/master)](https://ci.nephatrine.net/nephatrine/docker-nginx-ssl)
 
-This docker container manages the NGINX application, a lightweight web server and reverse proxy.
+# NGINX HTTP(S) Server/Proxy
 
-- [docker-base-alpine](https://code.nephatrine.net/nephatrine/docker-base-alpine)
+This docker container manages the NGINX application, a lightweight web server
+and reverse proxy.
+
 - [CertBot](https://certbot.eff.org/)
 - [NGINX](https://www.nginx.com/)
 
-## Configuration
+You can spin up a quick temporary test container like this:
 
-- ``{config}/etc/crontab``: Crontab Entries
-- ``{config}/etc/logrotate.conf``: Logrotate General Configuration
-- ``{config}/etc/logrotate.d/*``: Logrotate Per-Application Configuration
-- ``{config}/etc/mime.types``: NGINX MIME Types
-- ``{config}/etc/nginx.conf``: NGINX General Configuration
-- ``{config}/etc/nginx.d/*``: NGINX Per-Site Configuration
-- ``{config}/ssl/live/{site}/``: SSL/TLS certificates
+~~~
+docker run --rm -p 80:80 -it nephatrine/nginx-ssl:latest /bin/bash
+~~~
 
-This container is primarily intended to be used as a reverse proxy/cache to access other dockers. You can certainly serve static content, but tools like PHP or MySQL are not included.
+This container is primarily intended to be used as a reverse proxy/cache to
+access other containers. You can certainly serve static content, but tools like
+PHP or MySQL are not included.
 
-Certbot is installed and can request SSL certificats from LetsEncrypt on your behalf assuming you have entered the appropriate values. DNS challenges are not supported until I can come up with a good way to automate it. Unfortunately, that means wildcard certificates cannot be requested at this time.
+## Docker Tags
 
-**NOTE:** If you have trouble connecting from an older device or browser when using HTTPS, you may need to change the ciphers allowed in ``{config}/etc/nginx.d/_ssl.inc`` to be more permissive.
+- **nephatrine/nginx-ssl:testing**: NGINX Master (Alpine Edge)
+- **nephatrine/nginx-ssl:latest**: NGINX Default (Alpine v3.13)
+- **nephatrine/nginx-ssl:1.19**: NGINX v1.20 (Alpine v3.12)
+- **nephatrine/nginx-ssl:1.17**: NGINX v1.18 (Alpine v3.11)
 
-## Ports
+## Configuration Variables
 
-- **80/tcp:** HTTP Port
-- **443/tcp:** HTTPS Port
+You can set these parameters using the syntax ``-e "VARNAME=VALUE"`` on your
+``docker run`` command. Some of these may only be used during initial
+configuration and further changes may need to be made in the generated
+configuration files.
 
-## Variables
+- ``ADMINIP``: Administrator IP (*127.0.0.1*) (INITIAL CONFIG)
+- ``B_MODULI``: Default DH Params Size (*4096*)
+- ``B_RSA``: Default RSA Key Size (*4096*)
+- ``B_ECDSA``: Default ECDSA Key Size (*384*)
+- ``DNSADDR``: Resolver IPs (*8.8.8.8 8.8.4.4*) (INITIAL CONFIG)
+- ``PUID``: Mount Owner UID (*1000*)
+- ``PGID``: Mount Owner GID (*100*)
+- ``SSLEMAIL``: LetsEncrypt Email (**)
+- ``SSLDOMAINS``: LetsEncrypt Domains (**) (COMMA-DELIMITED)
+- ``TRUSTSN``: Trusted Subnet (*192.168.0.0/16*) (INITIAL CONFIG)
+- ``TZ``: System Timezone (*America/New_York*)
 
-- **PUID:** Owner UID (*1000*)
-- **PGID:** Owner GID (*100*)
-- **TZ:** Time Zone (*"America/New_York"*)
+## Persistent Mounts
 
-- **DNSADDR:** Resolver IPs ("8.8.8.8 8.8.4.4") (IGNORED AFTER INITIAL RUN) (SPACE-DELIMITED)
+You can provide a persistent mountpoint using the ``-v /host/path:/container/path``
+syntax. These mountpoints are intended to house important configuration files,
+logs, and application state (e.g. databases) so they are not lost on image
+update.
 
-- **ADMINIP**: Administrator IP ("127.0.0.1") (IGNORED AFTER INITIAL RUN)
-- **TRUSTSN:** Trusted Subnet ("192.168.0.0/16") (IGNORED AFTER INITIAL RUN)
+- ``/mnt/config``: Persistent Data.
 
-- **SSLEMAIL:** LetsEncrypt Email ("")
-- **SSLDOMAINS:** LetsEncrypt Domains ("") (COMMA-DELIMITED)
+Do not share ``/mnt/config`` volumes between multiple containers as they may
+interfere with the operation of one another.
 
-## Mount Points
+You can perform some basic configuration of the container using the files and
+directories listed below.
 
-- **/mnt/config:** Configuration/Logs
+- ``/mnt/config/etc/crontabs/<user>``: User Crontabs. [*]
+- ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
+- ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
+- ``/mnt/config/etc/mime.type``: NGINX MIME Types. [*]
+- ``/mnt/config/etc/nginx.conf``: NGINX Configuration. [*]
+- ``/mnt/config/etc/nginx.d/``: NGINX Configuration. [*]
+- ``/mnt/config/www/default/``: Default HTML Location.
+
+**[*] Changes to some configuration files may require service restart to take
+immediate effect.**
+
+## Network Services
+
+This container runs network services that are intended to be exposed outside
+the container. You can map these to host ports using the ``-p HOST:CONTAINER``
+or ``-p HOST:CONTAINER/PROTOCOL`` syntax.
+
+- ``80/tcp``: HTTP Server. This is the default insecure web server.
+- ``443/tcp``: HTTPS Server. This is the optional secured web server.
