@@ -1,5 +1,7 @@
 #!/usr/bin/with-contenv bash
 
+B_MODULI=${B_MODULI:-4096}
+
 DNSADDR=${DNSADDR:-"8.8.8.8 8.8.4.4"}
 ADMINIP=${ADMINIP:-"127.0.0.1"}
 TRUSTSN=${TRUSTSN:-"192.168.0.0/16"}
@@ -50,7 +52,7 @@ if [[ ! -z "${SSLPRIMARY}" ]]; then
   fi
 
   if [[ ! -f /mnt/config/ssl/dhparam.pem ]]; then
-    HOME=/mnt/config/home s6-setuidgid guardian openssl dhparam -out /mnt/config/ssl/dhparam.pem 4096
+    HOME=/mnt/config/home s6-setuidgid guardian openssl dhparam -out /mnt/config/ssl/dhparam.pem ${B_MODULI}
   fi
 fi
 
