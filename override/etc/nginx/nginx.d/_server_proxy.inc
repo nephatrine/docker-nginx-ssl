@@ -1,5 +1,7 @@
 #NOSSL:listen 80;
-#SSL:listen 443 http2 ssl;
+#NOSSL:listen [::]:80;
+#SSL:listen 443 ssl http2;
+#SSL:listen [::]:443 ssl http2;
 #SSL:ssl_certificate /mnt/config/ssl/live/example.net/fullchain.pem;
 #SSL:ssl_certificate_key /mnt/config/ssl/live/example.net/privkey.pem;
 #SSL:ssl_trusted_certificate /mnt/config/ssl/live/example.net/chain.pem;
