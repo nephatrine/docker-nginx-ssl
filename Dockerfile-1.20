@@ -1,4 +1,4 @@
-FROM nephatrine/alpine-s6:3.13
+FROM nephatrine/alpine-s6:3.12
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
@@ -6,7 +6,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && pip install zope.component \
  && rm -rf /var/cache/apk/*
 
-ARG NGINX_VERSION=branches/default
+ARG NGINX_VERSION=branches/stable-1.20
 
 RUN echo "====== COMPILE NGINX ======" \
  && apk add --virtual .build-nginx \

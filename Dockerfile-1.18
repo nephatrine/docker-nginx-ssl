@@ -1,12 +1,12 @@
-FROM nephatrine/alpine-s6:3.13
+FROM nephatrine/alpine-s6:3.11
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
  && apk add certbot geoip libgd libxslt pcre py3-pip \
- && pip install zope.component \
+ && pip3 install zope.component \
  && rm -rf /var/cache/apk/*
 
-ARG NGINX_VERSION=branches/default
+ARG NGINX_VERSION=branches/stable-1.18
 
 RUN echo "====== COMPILE NGINX ======" \
  && apk add --virtual .build-nginx \
