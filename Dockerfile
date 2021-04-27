@@ -21,11 +21,7 @@ RUN echo "====== COMPILE NGINX ======" \
    linux-headers \
    pcre-dev \
    zlib-dev \
- && cd /usr/src \
- && git clone https://github.com/nginx/nginx.git \
- && cd nginx \
- && git fetch && git fetch --tags \
- && git checkout "$NGINX_VERSION" \
+ && git -C /usr/src clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git && cd /usr/src/nginx \
  && ./auto/configure \
   --prefix=/var/www \
   --sbin-path=/usr/sbin/nginx \
