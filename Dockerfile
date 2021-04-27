@@ -67,7 +67,7 @@ RUN echo "====== COMPILE NGINX ======" \
   --with-pcre \
   --with-pcre-jit \
   --with-libatomic \
- && make -j4 \
+ && make -j4 CFLAGS="-DTLS1_3_VERSION=0x0304" \
  && make install \
  && strip /usr/sbin/nginx \
  && strip /usr/lib/nginx/modules/*.so \
