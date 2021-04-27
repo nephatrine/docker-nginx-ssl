@@ -24,10 +24,9 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:testing**: NGINX Master (Alpine Edge)
-- **nephatrine/nginx-ssl:latest**: NGINX Default (Alpine v3.13)
-- **nephatrine/nginx-ssl:1.19**: NGINX v1.20 (Alpine v3.12)
-- **nephatrine/nginx-ssl:1.17**: NGINX v1.18 (Alpine v3.11)
+- **nephatrine/nginx-ssl:testing**: NGINX Master
+- **nephatrine/nginx-ssl:latest**: NGINX Mainline (v.1.21)
+- **nephatrine/nginx-ssl:stable**: NGINX Stable (v1.20)
 
 ## Configuration Variables
 

@@ -8,20 +8,13 @@ platform:
   arch: amd64
 
 steps:
-- name: build-1.18
+- name: build-table
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:1.18 -f Dockerfile-1.18 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:1.18
-  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:1.18 nephatrine/nginx-ssl:1.18
-  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:1.18
-  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:1.18
-- name: build-1.20
-  commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:1.20 -f Dockerfile-1.20 .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:1.20
-  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:1.20 nephatrine/nginx-ssl:1.20
-  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:1.20
-  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:1.20
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:stable -f Dockerfile-stable .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:stable
+  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:stable nephatrine/nginx-ssl:stable
+  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:stable
+  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:stable
 - name: build-latest
   commands:
   - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:latest .
@@ -56,6 +49,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 90cd34babaef164703798e721c3aa9830a82004b3d86646dab75e34e3ca3a3a5
+hmac: 81393e18146a36f9c49d749cc8afcb1dd7d3ed0c50c2ff4e060b71739d7efb86
 
 ...
