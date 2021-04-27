@@ -8,20 +8,23 @@ platform:
   arch: amd64
 
 steps:
-- name: build-table
+- name: build-mainline
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:stable -f Dockerfile-stable .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:stable
-  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:stable nephatrine/nginx-ssl:stable
-  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:stable
-  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:stable
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:mainline .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:mainline
+  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:mainline nephatrine/nginx-ssl:mainline
+  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:mainline
+  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:mainline
 - name: build-latest
   commands:
+  - docker tag nephatrine/nginx-ssl:mainline pdr.nephatrine.net/nephatrine/nginx-ssl:latest
   - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:latest .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:latest
   - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:latest nephatrine/nginx-ssl:latest
   - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:latest
   - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:latest
+  depends_on:
+  - build-mainline
 
 ---
 kind: pipeline
@@ -31,7 +34,7 @@ steps:
 - name: notify
   image: appleboy/drone-discord
   settings:
-    avatar_url: https://files.nephatrine.net/Images/Buttons/Drone.png
+    avatar_url: https://nephatrine.net/images/buttons/drone-ci.png
     message: "Automated build of **{{repo.name}}:{{commit.branch}}** has returned [{{build.status}}]({{build.link}})."
     username: DroneCI
     webhook_id:
@@ -49,6 +52,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 81393e18146a36f9c49d749cc8afcb1dd7d3ed0c50c2ff4e060b71739d7efb86
+hmac: adadb0bd9a07d0510e6ace6433267dda05bdcd4c196625e314d5b5693aabdb28
 
 ...
