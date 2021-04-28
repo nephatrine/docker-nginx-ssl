@@ -1,5 +1,5 @@
-#NOSSL:listen 80 default_server;
-#NOSSL:listen [::]:80 default_server;
+#NOSSL:listen 80;
+#NOSSL:listen [::]:80;
 #SSL:listen 443 ssl http2;
 #SSL:listen [::]:443 ssl http2;
 #SSL:ssl_certificate /mnt/config/ssl/live/example.net/fullchain.pem;
