@@ -24,7 +24,7 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:mainline**: NGINX Mainline (v.1.21)
+- **nephatrine/nginx-ssl:mainline**: NGINX Mainline (v1.21)
 - **nephatrine/nginx-ssl:stable**: NGINX Stable (v1.20)
 
 ## Configuration Variables
