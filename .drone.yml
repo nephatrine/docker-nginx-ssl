@@ -18,7 +18,6 @@ steps:
 - name: build-latest
   commands:
   - docker tag nephatrine/nginx-ssl:mainline pdr.nephatrine.net/nephatrine/nginx-ssl:latest
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:latest .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:latest
   - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:latest nephatrine/nginx-ssl:latest
   - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:latest
@@ -71,6 +70,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: e7e66e06cd9f371cc8f7d8a2e8ebb75b33c25f46dc013f0900d99296faf292f6
+hmac: 19ef4107bc592039261a933e290242f90e4f6f7277ad033dc156be9a07b035b4
 
 ...
