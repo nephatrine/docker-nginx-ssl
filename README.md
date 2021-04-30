@@ -24,8 +24,11 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:mainline**: NGINX Mainline
-- **nephatrine/nginx-ssl:1.20**: NGINX 1.20 (Stable)
+- **nephatrine/nginx-ssl:testing**: NGINX Master
+- **nephatrine/nginx-ssl:latest**: NGINX Default
+- **nephatrine/nginx-ssl:mainline**: NGINX Default
+- **nephatrine/nginx-ssl:stable**: NGINX 1.20
+- **nephatrine/nginx-ssl:1.20**: NGINX 1.20
 
 ## Configuration Variables
 
@@ -61,12 +64,12 @@ interfere with the operation of one another.
 You can perform some basic configuration of the container using the files and
 directories listed below.
 
-- ``/mnt/config/etc/crontabs/<user>``: User Crontabs. [*]
+- ``/mnt/config/etc/crontabs/<user>``: User Crontabs.
 - ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
 - ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
-- ``/mnt/config/etc/mime.type``: NGINX MIME Types. [*]
-- ``/mnt/config/etc/nginx.conf``: NGINX Configuration. [*]
-- ``/mnt/config/etc/nginx.d/``: NGINX Configuration. [*]
+- ``/mnt/config/etc/mime.type``: NGINX MIME Types.
+- ``/mnt/config/etc/nginx.conf``: NGINX Configuration.
+- ``/mnt/config/etc/nginx.d/``: NGINX Configuration.
 - ``/mnt/config/www/default/``: Default HTML Location.
 
 **[*] Changes to some configuration files may require service restart to take
