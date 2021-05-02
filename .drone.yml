@@ -10,7 +10,7 @@ platform:
 steps:
 - name: build-mainline
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nginx-ssl:mainline .
+  - docker build -t pdr.nephatrine.net/nephatrine/nginx-ssl:mainline .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:mainline
   - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:mainline nephatrine/nginx-ssl:mainline
   - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:mainline
@@ -70,6 +70,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 19ef4107bc592039261a933e290242f90e4f6f7277ad033dc156be9a07b035b4
+hmac: 5e8865a593f506cafa835a10bac78949da40b4d6a0431819ed87e9ad5a343096
 
 ...
