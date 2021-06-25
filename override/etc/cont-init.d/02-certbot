@@ -21,6 +21,10 @@ if [[ ! -d /mnt/config/ssl/live ]]; then
   s6-setuidgid guardian mkdir -p /mnt/config/ssl/live
 fi
 
+if [[ -e /mnt/config/ssl/live/README ]]; then
+  rm -f /mnt/config/ssl/live/README
+fi
+
 if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" ]]; then
   if [[ $(ls /mnt/config/ssl/live | wc -l) -gt 0 ]]; then
     ls /mnt/config/ssl/live | xargs -n1 -I{} certbot revoke -n --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --cert-path "/mnt/config/ssl/live/{}/fullchain.pem" --reason superseded --work-dir /tmp/certbot
