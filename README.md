@@ -1,4 +1,4 @@
-[Git](https://code.nephatrine.net/nephatrine/docker-nginx-ssl) |
+[Git](https://code.nephatrine.net/nephatrine/docker-nginx-ssl/src/branch/master) |
 [Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
@@ -9,6 +9,9 @@
 This docker container manages the NGINX application, a lightweight web server
 and reverse proxy.
 
+- [Alpine Linux](https://alpinelinux.org/)
+- [Skarnet Software](https://skarnet.org/software/)
+- [S6 Overlay](https://github.com/just-containers/s6-overlay)
 - [CertBot](https://certbot.eff.org/)
 - [NGINX](https://www.nginx.com/)
 
@@ -24,11 +27,9 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:testing**: NGINX Master
-- **nephatrine/nginx-ssl:latest**: NGINX Default
-- **nephatrine/nginx-ssl:mainline**: NGINX Default
-- **nephatrine/nginx-ssl:stable**: NGINX 1.20
-- **nephatrine/nginx-ssl:1.20**: NGINX 1.20
+- **nephatrine/nginx-ssl:testing**: NGINX Mainline / Alpine Edge
+- **nephatrine/nginx-ssl:latest**: NGINX Mainline / Alpine Latest
+- **nephatrine/nginx-ssl:mainline**: NGINX Mainline / Alpine Latest
 
 ## Configuration Variables
 

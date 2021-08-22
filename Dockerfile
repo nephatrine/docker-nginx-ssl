@@ -1,26 +1,21 @@
 FROM nephatrine/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN echo "====== INSTALL PACKAGES ======" \
- && apk add certbot geoip libgd libxslt pcre py3-pip \
- && pip install zope.component \
- && rm -rf /var/cache/apk/*
-
 ARG NGINX_VERSION=branches/default
-
 RUN echo "====== COMPILE NGINX ======" \
- && apk add --virtual .build-nginx \
-   build-base \
-   gd-dev \
-   geoip-dev \
-   git \
-   libatomic_ops-dev \
-   libressl-dev \
-   libxml2-dev \
-   libxslt-dev \
-   linux-headers \
-   pcre-dev \
-   zlib-dev \
+ && apk add \
+  certbot \
+  geoip \
+  libgd libxslt \
+  pcre \
+  py3-pip \
+ && apk add --virtual .build-nginx build-base \
+  gd-dev geoip-dev git \
+  libatomic_ops-dev libxml2-dev libxslt-dev linux-headers \
+  openssl-dev \
+  pcre-dev \
+  zlib-dev \
+ && pip install zope.component \
  && git -C /usr/src clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git && cd /usr/src/nginx \
  && ./auto/configure \
   --prefix=/var/www \
@@ -67,15 +62,13 @@ RUN echo "====== COMPILE NGINX ======" \
   --with-pcre \
   --with-pcre-jit \
   --with-libatomic \
- && make -j4 CFLAGS="-DTLS1_3_VERSION=0x0304" \
+ && make -j4 \
  && make install \
  && strip /usr/sbin/nginx \
  && strip /usr/lib/nginx/modules/*.so \
+ && mkdir -p /var/cache/nginx \
  && cd /usr/src && rm -rf /usr/src/* \
  && apk del --purge .build-nginx && rm -rf /var/cache/apk/*
-
-RUN echo "====== CONFIGURE SYSTEM ======" \
- && mkdir -p /var/cache/nginx
 
 COPY override /
 EXPOSE 80/tcp 443/tcp
