@@ -62,7 +62,6 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
-      - nephatrine/docker-nginx-php@7.x
       - nephatrine/docker-nginx-php@master
 
 depends_on:
@@ -70,6 +69,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 5e8865a593f506cafa835a10bac78949da40b4d6a0431819ed87e9ad5a343096
+hmac: 5956f4bf47ce29519867ad796c14a8ee1fa1d874852ed85c81b7441aef3b473c
 
 ...
