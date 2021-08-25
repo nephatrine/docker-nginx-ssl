@@ -63,12 +63,13 @@ steps:
     fork: false
     repositories:
       - nephatrine/docker-nginx-php@master
+      - nephatrine/docker-quake2@master
 
 depends_on:
 - default
 
 ---
 kind: signature
-hmac: e672f340f3c0b131d97f7bd38068e144073dad40fd03ea8ab2a32730492fa035
+hmac: 8352b3e196ff344ec22a75bab5ff7f82d2ca0bc8b28effbefceb8bcbccd8442f
 
 ...
