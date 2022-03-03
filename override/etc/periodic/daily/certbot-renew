@@ -1,0 +1,14 @@
+#!/command/with-contenv /bin/bash
+
+B_RSA=${B_RSA:-4096}
+B_ECDSA=${B_ECDSA:-384}
+
+if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]]; then
+  if [[ ${B_ECDSA} -gt 0 ]]; then
+    /command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --key-type ecdsa --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
+  else
+    /command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --rsa-key-size ${B_RSA} --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
+  fi
+fi
+
+exit 0

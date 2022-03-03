@@ -1,0 +1,55 @@
+#!/command/with-contenv /bin/bash
+
+B_RSA=${B_RSA:-4096}
+B_ECDSA=${B_ECDSA:-384}
+
+# Determine Need
+
+if [[ ! -d /mnt/config/etc/certbot ]]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/certbot
+fi
+echo "$SSLDOMAINS" > /mnt/config/etc/certbot/requested
+
+if [[ ! -f /mnt/config/etc/certbot/configured ]]; then
+  echo "" > /mnt/config/etc/certbot/configured
+fi
+CURDOMAINS=`/usr/bin/head -1 /mnt/config/etc/certbot/configured`
+
+if [[ -z "${SSLDOMAINS}" && -z "${CURDOMAINS}" ]]; then
+  exit 0
+fi
+
+# Revoke Existing Certificates
+
+if [[ ! -d /mnt/config/ssl/live ]]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/ssl/live
+fi
+if [[ -f /mnt/config/ssl/live/README ]]; then
+  /bin/rm -f /mnt/config/ssl/live/README
+fi
+if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" ]]; then
+  if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]]; then
+    /bin/ls /mnt/config/ssl/live | /usr/bin/xargs -n1 -I{} /command/s6-setuidgid guardian /usr/bin/certbot revoke -n --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --cert-path "/mnt/config/ssl/live/{}/fullchain.pem" --reason superseded --work-dir /tmp/certbot
+    /bin/ls /mnt/config/ssl/live | /usr/bin/xargs -n1 -I{} /command/s6-setuidgid guardian /usr/bin/certbot delete -n --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --cert-name "{}" --work-dir /tmp/certbot
+    /bin/rm -rf /mnt/config/etc/certbot/configured
+  fi
+fi
+
+# Renew Or Create Certificates
+
+if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -eq 0 ]]; then
+  if [[ ! -z "$SSLDOMAINS" && $SSLEMAIL == *@* ]]; then
+    if [[ ${B_ECDSA} -gt 0 ]]; then
+      /command/s6-setuidgid guardian /usr/bin/certbot certonly -n --agree-tos --key-type ecdsa --keep --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --email "$SSLEMAIL" --standalone -d "$SSLDOMAINS" --work-dir /tmp/certbot
+    else
+      /command/s6-setuidgid guardian /usr/bin/certbot certonly -n --agree-tos --rsa-key-size ${B_RSA} --keep --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --email "$SSLEMAIL" --standalone -d "$SSLDOMAINS" --work-dir /tmp/certbot
+    fi
+    if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]]; then
+      /command/s6-setuidgid guardian /bin/cp /mnt/config/etc/certbot/requested /mnt/config/etc/certbot/configured
+    fi
+  fi
+elif [[ ${B_ECDSA} -gt 0 ]]; then
+  /command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --key-type ecdsa --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
+else
+  /command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --rsa-key-size ${B_RSA} --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
+fi

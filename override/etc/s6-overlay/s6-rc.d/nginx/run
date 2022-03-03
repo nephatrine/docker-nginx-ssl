@@ -1,0 +1,85 @@
+#!/command/with-contenv /bin/bash
+
+DOMAINNAME=${SSLPRIMARY:-"example.net"}
+
+ADMINIP=${ADMINIP:-"127.0.0.1"}
+DNSADDR=${DNSADDR:-"8.8.8.8 8.8.4.4"}
+TRUSTSN=${TRUSTSN:-"192.168.0.0/16"}
+
+THISIP=`/sbin/ifconfig eth0 | /bin/grep 'inet addr' | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $3}'`
+THISSN=`/sbin/ifconfig eth0 | /bin/grep 'inet addr' | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $7}'`
+TRSTIP=`/bin/ipcalc -n $THISIP $THISSN | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}'`
+TRSTPF=`/bin/ipcalc -p $THISIP $THISSN | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}'`
+
+SSLPRIMARY=`echo $SSLDOMAINS | /usr/bin/tr ',' ' ' | /usr/bin/awk '{print $1}'`
+B_MODULI=${B_MODULI:-4096}
+
+# Build Configuration
+
+if [[ ! -d /mnt/config/etc/nginx.d ]]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/nginx.d
+fi
+
+for NGF in /etc/nginx/nginx.d/*; do
+  NGE="/mnt/config/etc/nginx.d/$(/usr/bin/basename -- $NGF)"
+  if [[ ! -f ${NGE} ]]; then
+    /command/s6-setuidgid guardian /bin/cp ${NGF} ${NGE}
+
+    /bin/sed -i -e "s/127.0.0.1/${ADMINIP}/g" ${NGE}
+    /bin/sed -i -e "s/example.net/${DOMAINNAME}/g" ${NGE}
+    /bin/sed -i -e "s~ip_from 192.168.0.0/16~ip_from ${TRSTIP}/${TRSTPF}~g" ${NGE}
+    /bin/sed -i -e "s~allow 192.168.0.0/16~allow ${TRUSTSN}~g" ${NGE}
+
+    if [[ ! -z "${SSLPRIMARY}" ]]; then
+      /bin/sed -i -e 's/#NOSSL:/#/g' ${NGE}
+      /bin/sed -i -e 's/#SSL://g' ${NGE}
+    else
+      /bin/sed -i -e 's/#NOSSL://g' ${NGE}
+      /bin/sed -i -e 's/#SSL:/#/g' ${NGE}
+    fi
+  fi
+done
+
+if [[ ! -f /mnt/config/etc/nginx.conf ]]; then
+  /command/s6-setuidgid guardian /bin/cp /etc/nginx/nginx.conf /mnt/config/etc/nginx.conf
+  /bin/sed -i -e "s~8.8.8.8 8.8.4.4~${DNSADDR}~g" /mnt/config/etc/nginx.conf
+
+  if [[ ! -z "${SSLPRIMARY}" ]]; then
+    /bin/sed -i -e 's/#NOSSL:/#/g' /mnt/config/etc/nginx.conf
+    /bin/sed -i -e 's/#SSL://g' /mnt/config/etc/nginx.conf
+  else
+    /bin/sed -i -e 's/#NOSSL://g' /mnt/config/etc/nginx.conf
+    /bin/sed -i -e 's/#SSL:/#/g' /mnt/config/etc/nginx.conf
+  fi
+fi
+
+if [[ ! -z "${SSLPRIMARY}" ]]; then
+  if [[ ! -d /mnt/config/ssl ]]; then
+    /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/ssl
+    /command/s6-setuidgid guardian /bin/chmod 700 /mnt/config/ssl
+  fi
+  if [[ ! -f /mnt/config/ssl/dhparam.pem ]]; then
+    export HOME=/mnt/config/home
+    /command/s6-setuidgid guardian /usr/bin/openssl dhparam -out /mnt/config/ssl/dhparam.pem ${B_MODULI}
+  fi
+fi
+
+if [[ ! -f /mnt/config/etc/mime.types ]]; then
+  /command/s6-setuidgid guardian /bin/cp /etc/nginx/mime.types /mnt/config/etc/mime.types
+fi
+
+# Create Web Directory
+
+if [[ ! -d /mnt/config/www ]]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/www/default
+  /command/s6-setuidgid guardian /bin/cp -Rn /var/www/html/* /mnt/config/www/default/
+fi
+
+# Start Service
+
+export HOME=/mnt/config/home
+exec /usr/sbin/nginx -c /mnt/config/etc/nginx.conf;
+if [[ -f /var/log/nginx/error.log ]]; then
+  /bin/cat /var/log/nginx/error.log | /usr/bin/tee -a /mnt/config/log/nginx-error.log
+  /bin/rm -f /var/log/nginx/error.log
+fi
