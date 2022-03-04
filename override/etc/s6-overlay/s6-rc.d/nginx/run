@@ -68,6 +68,12 @@ if [[ ! -f /mnt/config/etc/mime.types ]]; then
   /command/s6-setuidgid guardian /bin/cp /etc/nginx/mime.types /mnt/config/etc/mime.types
 fi
 
+# Create Log Directory
+
+if [[ ! -d /mnt/config/log ]]; then
+  /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
+fi
+
 # Create Web Directory
 
 if [[ ! -d /mnt/config/www ]]; then
