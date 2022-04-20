@@ -27,9 +27,7 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:testing**: NGINX Mainline / Alpine Edge
 - **nephatrine/nginx-ssl:latest**: NGINX Mainline / Alpine Latest
-- **nephatrine/nginx-ssl:mainline**: NGINX Mainline / Alpine Latest
 
 ## Configuration Variables
 
