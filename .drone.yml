@@ -28,7 +28,7 @@ steps:
       from_secret: docker-pass
   commands:
   - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:latest nephatrine/nginx-ssl:latest
-  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:mainline nephatrine/nginx-ssl:mainline
+  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:latest nephatrine/nginx-ssl:mainline
   - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
   - docker push -a nephatrine/nginx-ssl
   - docker logout
@@ -82,6 +82,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 45e288b35206db275b63216c2d46475d1260dc19d8b8f0dcc63b0f9736ef6532
+hmac: 11610c28aabe2dd1d8652be7e5cc0a8a2027659645df555774066e6e5603636a
 
 ...
