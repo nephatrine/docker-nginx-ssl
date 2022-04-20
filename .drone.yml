@@ -8,29 +8,39 @@ platform:
   arch: amd64
 
 steps:
-- name: build-mainline
+- name: build
+  environment:
+    PDR_USER:
+      from_secret: docker-user-pdr
+    PDR_PASS:
+      from_secret: docker-pass-pdr
   commands:
-  - docker build -t pdr.nephatrine.net/nephatrine/nginx-ssl:mainline .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:mainline
-  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:mainline nephatrine/nginx-ssl:mainline
-  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:mainline
-  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:mainline
-- name: build-latest
+  - docker build -t pdr.nephatrine.net/nephatrine/nginx-ssl:cached --target builder .
+  - docker build -t pdr.nephatrine.net/nephatrine/nginx-ssl:latest .
+  - docker login -p "$PDR_PASS" -u "$PDR_USER" pdr.nephatrine.net
+  - docker push pdr.nephatrine.net/nephatrine/nginx-ssl:latest
+  - docker logout pdr.nephatrine.net
+- name: publish
+  environment:
+    DOCKER_USER:
+      from_secret: docker-user
+    DOCKER_PASS:
+      from_secret: docker-pass
   commands:
-  - docker tag nephatrine/nginx-ssl:mainline pdr.nephatrine.net/nephatrine/nginx-ssl:latest
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nginx-ssl:latest
   - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:latest nephatrine/nginx-ssl:latest
-  - HOME=/mnt/config/home docker push nephatrine/nginx-ssl:latest
-  - docker rmi pdr.nephatrine.net/nephatrine/nginx-ssl:latest
+  - docker tag pdr.nephatrine.net/nephatrine/nginx-ssl:mainline nephatrine/nginx-ssl:mainline
+  - docker login -p "$DOCKER_PASS" -u "$DOCKER_USER"
+  - docker push -a nephatrine/nginx-ssl
+  - docker logout
   depends_on:
-  - build-mainline
+  - build
 
 ---
 kind: pipeline
-name: after
+name: notify
 
 steps:
-- name: notify
+- name: notify-status
   image: appleboy/drone-discord
   failure: ignore
   settings:
@@ -55,7 +65,7 @@ kind: pipeline
 name: propogate
 
 steps:
-- name: trigger
+- name: propogate-downstream
   image: plugins/downstream
   failure: ignore
   settings:
@@ -64,14 +74,14 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
-      - nephatrine/docker-nginx-php@master
-      - nephatrine/docker-quake2@master
+    - nephatrine/docker-nginx-php@master
+    - nephatrine/docker-quake2@master
 
 depends_on:
 - default
 
 ---
 kind: signature
-hmac: 66bd04fd5fa53af3caa0a7e9eb41c14a85c628a5fffcef861e2e2c16c22accf2
+hmac: 45e288b35206db275b63216c2d46475d1260dc19d8b8f0dcc63b0f9736ef6532
 
 ...

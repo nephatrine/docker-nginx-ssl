@@ -1,24 +1,13 @@
-FROM nephatrine/alpine-s6:latest
-LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
+FROM pdr.nephatrine.net/nephatrine/alpine-builder:latest AS builder
 
-RUN echo "====== INSTALL TOOLS ======" \
- && apk add --no-cache \
-  certbot \
-  geoip \
-  libgd libxslt \
-  pcre \
-  py3-pip
+RUN echo "====== INSTALL LIBRARIES ======" \
+ && apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxml2-dev libxslt-dev openssl-dev pcre-dev zlib-dev
 
 ARG NGINX_VERSION=branches/default
+RUN git -C /usr/src clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
+
 RUN echo "====== COMPILE NGINX ======" \
- && apk add --no-cache --virtual .build-nginx build-base \
-  gd-dev geoip-dev git \
-  libatomic_ops-dev libxml2-dev libxslt-dev linux-headers \
-  openssl-dev \
-  pcre-dev \
-  zlib-dev \
- && pip install zope.component \
- && git -C /usr/src clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git && cd /usr/src/nginx \
+ && cd /usr/src/nginx \
  && ./auto/configure \
   --prefix=/var/www \
   --sbin-path=/usr/sbin/nginx \
@@ -65,12 +54,20 @@ RUN echo "====== COMPILE NGINX ======" \
   --with-pcre-jit \
   --with-libatomic \
  && make -j4 \
- && make install \
- && strip /usr/sbin/nginx \
- && strip /usr/lib/nginx/modules/*.so \
- && mkdir -p /var/cache/nginx \
- && cd /usr/src && rm -rf /usr/src/* \
- && apk del --purge .build-nginx
+ && make install
 
+FROM nephatrine/alpine-s6:latest
+LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
+
+RUN echo "====== INSTALL PACKAGES ======" \
+ && apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
+ && pip install zope.component \
+ && mkdir -p /etc/nginx /usr/lib/nginx /var/cache/nginx /var/log/nginx /var/www
+
+COPY --from=builder /etc/nginx/ /etc/nginx/
+COPY --from=builder /usr/lib/nginx/ /usr/lib/nginx/
+COPY --from=builder /usr/sbin/nginx /usr/sbin/
+COPY --from=builder /var/www/ /var/www/
 COPY override /
+
 EXPOSE 80/tcp 443/tcp
