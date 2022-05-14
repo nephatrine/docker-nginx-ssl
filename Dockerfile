@@ -1,4 +1,4 @@
-FROM pdr.nephatrine.net/nephatrine/alpine-builder:latest AS builder
+FROM nephatrine/alpine:builder AS builder
 
 RUN echo "====== INSTALL LIBRARIES ======" \
  && apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxml2-dev libxslt-dev openssl-dev pcre-dev zlib-dev
@@ -56,7 +56,7 @@ RUN echo "====== COMPILE NGINX ======" \
  && make -j4 \
  && make install
 
-FROM pdr.nephatrine.net/nephatrine/alpine-s6:latest
+FROM nephatrine/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
