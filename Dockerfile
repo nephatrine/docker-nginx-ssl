@@ -4,10 +4,10 @@ RUN echo "====== INSTALL LIBRARIES ======" \
  && apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
 
 ARG NGINX_VERSION=branches/default
-RUN git -C ${HOME} clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
+RUN git -C /root clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
 
 RUN echo "====== COMPILE NGINX ======" \
- && cd ${HOME}/nginx \
+ && cd /root/nginx \
  && ./auto/configure \
   --prefix=/var/www \
   --sbin-path=/usr/sbin/nginx \
