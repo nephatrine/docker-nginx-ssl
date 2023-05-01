@@ -9,11 +9,8 @@
 This docker container manages the NGINX application, a lightweight web server
 and reverse proxy.
 
-- [Alpine Linux](https://alpinelinux.org/)
-- [Skarnet Software](https://skarnet.org/software/)
-- [S6 Overlay](https://github.com/just-containers/s6-overlay)
-- [CertBot](https://certbot.eff.org/)
-- [NGINX](https://www.nginx.com/)
+- [Alpine Linux](https://alpinelinux.org/) w/ [S6 Overlay](https://github.com/just-containers/s6-overlay)
+- [NGINX](https://www.nginx.com/) w/ [CertBot](https://certbot.eff.org/)
 
 You can spin up a quick temporary test container like this:
 
