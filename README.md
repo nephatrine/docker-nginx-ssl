@@ -1,4 +1,4 @@
-[Git](https://code.nephatrine.net/nephatrine/docker-nginx-ssl/src/branch/master) |
+[Git](https://code.nephatrine.net/NephNET/docker-nginx-ssl/src/branch/master) |
 [Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
@@ -24,7 +24,7 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:latest**: NGINX Mainline / Alpine Latest
+- **nephatrine/nginx-ssl:latest**: NGINX v1.24.0 / Alpine Latest
 
 ## Configuration Variables
 
