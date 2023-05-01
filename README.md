@@ -2,8 +2,6 @@
 [Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
 [unRAID](https://code.nephatrine.net/nephatrine/unraid-containers)
 
-[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nginx-ssl/status.svg?ref=refs/heads/master)](https://ci.nephatrine.net/nephatrine/docker-nginx-ssl)
-
 # NGINX HTTP(S) Server/Proxy
 
 This docker container manages the NGINX application, a lightweight web server
