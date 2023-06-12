@@ -194,12 +194,12 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/nginx-ssl:1.24.0 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
-          docker manifest create nephatrine/nginx-ssl:1.24 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
+          docker manifest create nephatrine/nginx-ssl:1.25.0 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
+          docker manifest create nephatrine/nginx-ssl:1.25 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
           docker manifest create nephatrine/nginx-ssl:1 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
           docker manifest create nephatrine/nginx-ssl:latest --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
-          docker manifest push --purge nephatrine/nginx-ssl:1.24.0
-          docker manifest push --purge nephatrine/nginx-ssl:1.24
+          docker manifest push --purge nephatrine/nginx-ssl:1.25.0
+          docker manifest push --purge nephatrine/nginx-ssl:1.25
           docker manifest push --purge nephatrine/nginx-ssl:1
           docker manifest push --purge nephatrine/nginx-ssl:latest
       - name: Checkout Repository

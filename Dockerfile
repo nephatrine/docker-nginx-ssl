@@ -3,7 +3,7 @@ FROM nephatrine/nxbuilder:alpine AS builder
 RUN echo "====== INSTALL LIBRARIES ======" \
  && apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
 
-ARG NGINX_VERSION=release-1.24.0
+ARG NGINX_VERSION=release-1.25.0
 RUN git -C /root clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
 
 RUN echo "====== COMPILE NGINX ======" \
