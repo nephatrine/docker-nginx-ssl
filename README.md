@@ -22,7 +22,7 @@ PHP or MySQL are not included.
 
 ## Docker Tags
 
-- **nephatrine/nginx-ssl:latest**: NGINX v1.25.0 / Alpine Latest
+- **nephatrine/nginx-ssl:latest**: NGINX v1.25.1 / Alpine Latest
 
 ## Configuration Variables
 
