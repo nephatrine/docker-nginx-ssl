@@ -71,4 +71,4 @@ COPY --from=builder /usr/sbin/nginx /usr/sbin/
 COPY --from=builder /var/www/ /var/www/
 COPY override /
 
-EXPOSE 80/tcp 443/tcp
+EXPOSE 80/tcp 443/tcp 443/udp
