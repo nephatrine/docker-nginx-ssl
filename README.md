@@ -77,3 +77,4 @@ or ``-p HOST:CONTAINER/PROTOCOL`` syntax.
 
 - ``80/tcp``: HTTP Server. This is the default insecure web server.
 - ``443/tcp``: HTTPS Server. This is the optional secured web server.
+- ``443/udp``: QUIC Port. This is required for HTTP/3.
