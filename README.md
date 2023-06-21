@@ -22,7 +22,7 @@ This is an example docker-compose file:
 
 ```yaml
 services:
-  gitea:
+  nginx:
     image: nephatrine/nginx-ssl:latest
     container_name: nginx
     environment:
