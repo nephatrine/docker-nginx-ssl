@@ -20,4 +20,3 @@ services:
       - "443:443/udp"
     volumes:
       - /mnt/containers/nginx:/mnt/config
-      - /mnt/containers/php/run/php-fpm.sock:/var/run/php-fpm.sock
