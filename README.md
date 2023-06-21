@@ -55,5 +55,5 @@ and potentially customize.
 - `/mnt/config/etc/nginx.d/*`
 - `/mnt/config/www/default/*`
 
-Modifications to some of thee may require a service restart to pull in the
+Modifications to some of these may require a service restart to pull in the
 changes made.
