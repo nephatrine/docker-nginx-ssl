@@ -2,79 +2,58 @@
 [Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
 [unRAID](https://code.nephatrine.net/NephNET/unraid-containers)
 
-# NGINX HTTP(S) Server/Proxy
+# NGINX Reverse Proxy/Web Server
 
 This docker container manages the NGINX application, a lightweight web server
-and reverse proxy.
+and reverse proxy. It includes certbot/letsencrypt for easily obtaining TLS
+certificates if your server is publicly accessible.
 
-- [Alpine Linux](https://alpinelinux.org/) w/ [S6 Overlay](https://github.com/just-containers/s6-overlay)
-- [NGINX](https://www.nginx.com/) w/ [CertBot](https://certbot.eff.org/)
-
-You can spin up a quick temporary test container like this:
-
-~~~
-docker run --rm -p 80:80 -it nephatrine/nginx-ssl:latest /bin/bash
-~~~
+The `latest` tag points to version `1.25.1` and this is the only image actively
+being updated. There are tags for older versions, but these may no longer be
+using the latest Alpine version and packages.
 
 This container is primarily intended to be used as a reverse proxy/cache to
 access other containers. You can certainly serve static content, but tools like
 PHP or MySQL are not included.
 
-## Docker Tags
+## Docker-Compose
 
-- **nephatrine/nginx-ssl:latest**: NGINX v1.25.1 / Alpine Latest
+This is an example docker-compose file:
 
-## Configuration Variables
+```yaml
+services:
+  gitea:
+    image: nephatrine/nginx-ssl:latest
+    container_name: nginx
+    environment:
+      TZ: America/New_York
+      PUID: 1000
+      PGID: 1000
+      ADMINIP: 127.0.0.1
+      TRUSTSN: 192.168.0.0/16
+      DNSADDR: "8.8.8.8 8.8.4.4"
+      SSLEMAIL: 
+      SSLDOMAINS: 
+      B_MODULI: 4096
+      B_RSA: 4096
+      B_ECDSA: 384
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+      - "443:443/udp"
+    volumes:
+      - /mnt/containers/nginx:/mnt/config
+```
 
-You can set these parameters using the syntax ``-e "VARNAME=VALUE"`` on your
-``docker run`` command. Some of these may only be used during initial
-configuration and further changes may need to be made in the generated
-configuration files.
+## Server Configuration
 
-- ``ADMINIP``: Administrator IP (*127.0.0.1*) (INITIAL CONFIG)
-- ``B_MODULI``: Default DH Params Size (*4096*)
-- ``B_RSA``: Default RSA Key Size (*4096*)
-- ``B_ECDSA``: Default ECDSA Key Size (*384*)
-- ``DNSADDR``: Resolver IPs (*8.8.8.8 8.8.4.4*) (INITIAL CONFIG)
-- ``PUID``: Mount Owner UID (*1000*)
-- ``PGID``: Mount Owner GID (*100*)
-- ``SSLEMAIL``: LetsEncrypt Email (**)
-- ``SSLDOMAINS``: LetsEncrypt Domains (**) (COMMA-DELIMITED)
-- ``TRUSTSN``: Trusted Subnet (*192.168.0.0/16*) (INITIAL CONFIG)
-- ``TZ``: System Timezone (*America/New_York*)
+These are the configuration and data files you will likely need to be aware of
+and potentially customize.
 
-## Persistent Mounts
+- `/mnt/config/etc/mime.type`
+- `/mnt/config/etc/nginx.conf`
+- `/mnt/config/etc/nginx.d/*`
+- `/mnt/config/www/default/*`
 
-You can provide a persistent mountpoint using the ``-v /host/path:/container/path``
-syntax. These mountpoints are intended to house important configuration files,
-logs, and application state (e.g. databases) so they are not lost on image
-update.
-
-- ``/mnt/config``: Persistent Data.
-
-Do not share ``/mnt/config`` volumes between multiple containers as they may
-interfere with the operation of one another.
-
-You can perform some basic configuration of the container using the files and
-directories listed below.
-
-- ``/mnt/config/etc/crontabs/<user>``: User Crontabs.
-- ``/mnt/config/etc/logrotate.conf``: Logrotate Global Configuration.
-- ``/mnt/config/etc/logrotate.d/``: Logrotate Additional Configuration.
-- ``/mnt/config/etc/mime.type``: NGINX MIME Types.
-- ``/mnt/config/etc/nginx.conf``: NGINX Configuration.
-- ``/mnt/config/etc/nginx.d/``: NGINX Configuration.
-- ``/mnt/config/www/default/``: Default HTML Location.
-
-**[*] Changes to some configuration files may require service restart to take
-immediate effect.**
-
-## Network Services
-
-This container runs network services that are intended to be exposed outside
-the container. You can map these to host ports using the ``-p HOST:CONTAINER``
-or ``-p HOST:CONTAINER/PROTOCOL`` syntax.
-
-- ``80/tcp``: HTTP Server. This is the default insecure web server.
-- ``443/tcp``: HTTPS Server. This is the optional secured web server.
-- ``443/udp``: QUIC Port. This is required for HTTP/3.
+Modifications to some of thee may require a service restart to pull in the
+changes made.
