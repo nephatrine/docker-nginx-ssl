@@ -54,8 +54,8 @@ RUN echo "====== COMPILE NGINX ======" \
   --with-pcre \
   --with-pcre-jit \
   --with-libatomic \
- && make -j4 \
- && make install
+ && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) \
+ && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) install
 
 FROM nephatrine/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
