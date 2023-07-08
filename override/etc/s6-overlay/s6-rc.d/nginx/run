@@ -94,4 +94,11 @@ fi
 
 # Start Service
 
-exec /usr/sbin/nginx -c /mnt/config/etc/nginx.conf;
+if [[ -f /mnt/config/etc/nginx.conf ]]; then
+  exec /usr/sbin/nginx -c /mnt/config/etc/nginx.conf;
+else
+  /bin/echo "** no config exists **"
+  /bin/sleep 300
+  exit 0
+fi
+
