@@ -61,8 +61,9 @@ FROM nephatrine/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
- && apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
- && pip3 install zope.component \
+ && if [ "$(uname -m)" = "riscv64" ]; then apk add --no-cache certbot geoip libgd libxslt pcre pipx \
+  && pipx install zope.component; else apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
+  && pip3 install zope.component; fi \
  && mkdir -p /etc/nginx /usr/lib/nginx /var/cache/nginx /var/log/nginx /var/www
 
 COPY --from=builder /etc/nginx/ /etc/nginx/
