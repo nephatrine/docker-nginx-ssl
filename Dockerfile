@@ -63,7 +63,7 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 RUN echo "====== INSTALL PACKAGES ======" \
  && apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
  && if [ "$(uname -m)" = "riscv64" ]; then \
-  pip3 --break-system-packages install zope.component; else \
+  pip3 install --break-system-packages zope.component; else \
   pip3 install zope.component; fi \
  && mkdir -p /etc/nginx /usr/lib/nginx /var/cache/nginx /var/log/nginx /var/www
 
