@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2018 - 2023 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
+
 gzip on;
 gzip_comp_level 4;
 gzip_min_length 256;

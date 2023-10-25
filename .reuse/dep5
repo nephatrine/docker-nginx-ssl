@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: docker-nginx-ssl
+Upstream-Contact: Daniel Wolf <nephatrine@gmail.com>
+Source: https://code.nephatrine.net/NephNET/docker-nginx-ssl
+
+Files: override/etc/s6-overlay/*
+Copyright: 2022 - 2023 Daniel Wolf <nephatrine@gmail.com>
+License: ISC

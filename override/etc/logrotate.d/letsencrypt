@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2018 - 2023 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
+
 /mnt/config/log/letsencrypt.log {
 	missingok
 	notifempty

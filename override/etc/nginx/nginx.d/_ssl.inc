@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2018 - 2023 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
+
 ssl_protocols TLSv1.2 TLSv1.3;
 ssl_prefer_server_ciphers off;
 ssl_dhparam /mnt/config/ssl/dhparam.pem;

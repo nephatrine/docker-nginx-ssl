@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2018 - 2023 Daniel Wolf <nephatrine@gmail.com>
+#
+# SPDX-License-Identifier: ISC
+
 #NOSSL:listen 80;
 #NOSSL:listen [::]:80;
 #SSL:listen 443 quic;
