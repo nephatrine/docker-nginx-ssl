@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2018 - 2023 Daniel Wolf <nephatrine@gmail.com>
+
+SPDX-License-Identifier: ISC
+-->
+
 [Git](https://code.nephatrine.net/NephNET/docker-nginx-ssl/src/branch/master) |
 [Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
 [unRAID](https://code.nephatrine.net/NephNET/unraid-containers)
@@ -8,7 +14,7 @@ This docker container manages the NGINX application, a lightweight web server
 and reverse proxy. It includes certbot/letsencrypt for easily obtaining TLS
 certificates if your server is publicly accessible.
 
-The `latest` tag points to version `1.25.2` and this is the only image actively
+The `latest` tag points to version `1.25.3` and this is the only image actively
 being updated. There are tags for older versions, but these may no longer be
 using the latest Alpine version and packages.
 
