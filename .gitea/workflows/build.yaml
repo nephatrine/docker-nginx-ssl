@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2023 - 2024 Daniel Wolf <nephatrine@gmail.com>
 #
 # SPDX-License-Identifier: ISC
 
@@ -14,13 +14,9 @@ jobs:
     runs-on: nephnet-amd64
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-amd64-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-amd64 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -28,9 +24,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/nginx-ssl:master-amd64
+        with:
+          context: .
+          platforms: linux/amd64
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/nginx-ssl:latest-amd64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-amd64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-amd64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-amd64 --platform linux/amd64 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -42,13 +53,9 @@ jobs:
     runs-on: nephnet-i386
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-i386-cached --target builder --platform linux/386 ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-i386 --platform linux/386 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -56,9 +63,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/nginx-ssl:master-i386
+        with:
+          context: .
+          platforms: linux/386
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/nginx-ssl:latest-i386
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-i386
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-i386,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-i386 --platform linux/386 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -70,13 +92,9 @@ jobs:
     runs-on: nephnet-arm64
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-arm64v8-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-arm64v8 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -84,9 +102,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/nginx-ssl:master-arm64v8
+        with:
+          context: .
+          platforms: linux/arm64/v8
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/nginx-ssl:latest-arm64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-arm64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-arm64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-arm64 --platform linux/arm64/v8 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -98,13 +131,9 @@ jobs:
     runs-on: nephnet-armhf
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-armv7-cached --target builder --platform linux/arm/v7 ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-armv7 --platform linux/arm/v7 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -112,9 +141,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/nginx-ssl:master-armv7
+        with:
+          context: .
+          platforms: linux/arm/v7
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/nginx-ssl:latest-armv7
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-armv7
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-armv7,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-armv7 --platform linux/arm/v7 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -126,13 +170,9 @@ jobs:
     runs-on: nephnet-riscv64
     steps:
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
-      - name: Docker Build
-        run: |
-          export BRANCH=${GITHUB_REF##*/}
-          export BRANCH=${BRANCH:-master}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-riscv64-cached --target builder ${{ gitea.workspace }}
-          docker build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-riscv64 ${{ gitea.workspace }}
+        uses: https://gitea.com/actions/checkout@v4
+      - name: BuildX Setup
+        uses: https://github.com/docker/setup-buildx-action@v3
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -140,9 +180,24 @@ jobs:
           registry: code.nephatrine.net
           username: ${{ gitea.actor }}
           password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Push
+      - name: Build & Push (Master)
+        uses: https://github.com/docker/build-push-action@v5
         if: gitea.ref_name == 'master' || gitea.ref_name == ''
-        run: docker push code.nephatrine.net/nephnet/nginx-ssl:master-riscv64
+        with:
+          context: .
+          platforms: linux/riscv64
+          provenance: false
+          pull: true
+          push: true
+          tags: code.nephatrine.net/nephnet/nginx-ssl:latest-riscv64
+          cache-from: type=registry,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-riscv64
+          cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephnet/nginx-ssl-cache:latest-riscv64,mode=max
+      - name: Build & Push (Branch)
+        if: gitea.ref_name != 'master' && gitea.ref_name != ''
+        run: |
+          export BRANCH=${GITHUB_REF##*/}
+          export BRANCH=${BRANCH:-unknown}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-riscv64 --platform linux/riscv64 ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -152,125 +207,29 @@ jobs:
   build_manifest:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
     needs: [build_amd64, build_i386, build_arm64, build_armhf, build_riscv64]
-    runs-on: nephnet
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          registry: code.nephatrine.net
-          username: ${{ gitea.actor }}
-          password: ${{ secrets.PACKAGER_TOKEN }}
-      - name: Docker Manifest
-        run: |
-          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:latest --amend code.nephatrine.net/nephnet/nginx-ssl:master-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:master-i386 --amend code.nephatrine.net/nephnet/nginx-ssl:master-arm64v8 --amend code.nephatrine.net/nephnet/nginx-ssl:master-armv7 --amend code.nephatrine.net/nephnet/nginx-ssl:master-riscv64
-          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:latest
-  publish_amd64:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_amd64]
     runs-on: nephnet-amd64
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:master-amd64
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:master-amd64 nephatrine/nginx-ssl:latest-amd64
-          docker push nephatrine/nginx-ssl:latest-amd64
-          docker rmi nephatrine/nginx-ssl:latest-amd64
-  publish_i386:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_i386]
-    runs-on: nephnet-i386
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:master-i386
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:master-i386 nephatrine/nginx-ssl:latest-i386
-          docker push nephatrine/nginx-ssl:latest-i386
-          docker rmi nephatrine/nginx-ssl:latest-i386
-  publish_arm64:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_arm64]
-    runs-on: nephnet-arm64
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:master-arm64v8
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:master-arm64v8 nephatrine/nginx-ssl:latest-arm64v8
-          docker push nephatrine/nginx-ssl:latest-arm64v8
-          docker rmi nephatrine/nginx-ssl:latest-arm64v8
-  publish_armhf:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_armhf]
-    runs-on: nephnet-armhf
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:master-armv7
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:master-armv7 nephatrine/nginx-ssl:latest-armv7
-          docker push nephatrine/nginx-ssl:latest-armv7
-          docker rmi nephatrine/nginx-ssl:latest-armv7
-  publish_riscv64:
-    if: gitea.ref_name == 'master' || gitea.ref_name == ''
-    needs: [build_riscv64]
-    runs-on: nephnet-riscv64
-    steps:
-      - name: Docker Login
-        uses: https://github.com/docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Docker Push
-        run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:master-riscv64
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:master-riscv64 nephatrine/nginx-ssl:latest-riscv64
-          docker push nephatrine/nginx-ssl:latest-riscv64
-          docker rmi nephatrine/nginx-ssl:latest-riscv64
-  publish_manifest:
-    needs: [publish_amd64, publish_arm64, publish_armhf, publish_riscv64]
-    runs-on: nephnet
     steps:
       - name: Check Base Image
         if: gitea.event_name == 'schedule'
         uses: https://github.com/lucacome/docker-image-update-checker@v1
         id: checkbase
         with:
-          base-image: nephatrine/alpine-s6:latest
+          base-image: code.nephatrine.net/nephnet/alpine-s6:internal
           image: nephatrine/nginx-ssl:latest
           platforms: linux/amd64
+      - name: Docker Login
+        uses: https://github.com/docker/login-action@v3
+        with:
+          registry: code.nephatrine.net
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Login
         uses: https://github.com/docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
-        run: |
-          docker manifest create nephatrine/nginx-ssl:1.25.4 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-i386 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
-          docker manifest create nephatrine/nginx-ssl:1.25 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-i386 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
-          docker manifest create nephatrine/nginx-ssl:1 --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-i386 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
-          docker manifest create nephatrine/nginx-ssl:latest --amend nephatrine/nginx-ssl:latest-amd64 --amend nephatrine/nginx-ssl:latest-i386 --amend nephatrine/nginx-ssl:latest-arm64v8 --amend nephatrine/nginx-ssl:latest-armv7 --amend nephatrine/nginx-ssl:latest-riscv64
-          docker manifest push --purge nephatrine/nginx-ssl:1.25.4
-          docker manifest push --purge nephatrine/nginx-ssl:1.25
-          docker manifest push --purge nephatrine/nginx-ssl:1
-          docker manifest push --purge nephatrine/nginx-ssl:latest
+        run: docker buildx imagetools create -t code.nephatrine.net/nephnet/nginx-ssl:latest -t nephatrine/nginx-ssl:latest -t nephatrine/nginx-ssl:1.25.4 -t nephatrine/nginx-ssl:1.25 -t nephatrine/nginx-ssl:1 code.nephatrine.net/nephnet/nginx-ssl:latest-amd64 code.nephatrine.net/nephnet/nginx-ssl:latest-i386 code.nephatrine.net/nephnet/nginx-ssl:latest-arm64 code.nephatrine.net/nephnet/nginx-ssl:latest-armv7 code.nephatrine.net/nephnet/nginx-ssl:latest-riscv64
       - name: Notify Discord
         if: gitea.event_name != 'schedule' || steps.checkbase.outputs.needs-updating == 'true'
         uses: https://github.com/sarisia/actions-status-discord@v1
@@ -280,10 +239,16 @@ jobs:
           nodetail: true
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
       - name: Checkout Repository
-        uses: https://gitea.com/actions/checkout@v3
+        uses: https://gitea.com/actions/checkout@v4
       - name: Docker Describe
         uses: https://github.com/peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
           repository: nephatrine/nginx-ssl
+      - name: Notify Discord
+        uses: https://github.com/sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          title: "Container Publish"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
