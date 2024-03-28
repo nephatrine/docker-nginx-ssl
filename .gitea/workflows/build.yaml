@@ -53,7 +53,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure() || gitea.event_name != 'schedule'
         with:
-          title: "Container Build (X86_64; EDGE)"
+          title: "Container Build (X86_64; 1.25.4)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_amd64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -117,7 +117,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (I686; EDGE)"
+          title: "Container Build (I686; 1.25.4)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_i386:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -181,7 +181,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (AARCH64; EDGE)"
+          title: "Container Build (AARCH64; 1.25.4)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_arm64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -245,7 +245,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (ARMV7L; EDGE)"
+          title: "Container Build (ARMV7L; 1.25.4)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_armhf:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -309,7 +309,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (RISCV64; EDGE)"
+          title: "Container Build (RISCV64; 1.25.4)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_riscv64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
