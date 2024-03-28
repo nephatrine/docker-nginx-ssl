@@ -48,7 +48,7 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-unknown}
-          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-amd64 --platform linux/amd64 -f Dockerfile ${{ gitea.workspace }}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-amd64 --platform linux/amd64 -f Dockerfile ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure() || gitea.event_name != 'schedule'
@@ -112,7 +112,7 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-unknown}
-          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-i386 --platform linux/386 -f Dockerfile ${{ gitea.workspace }}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-i386 --platform linux/386 -f Dockerfile ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -176,7 +176,7 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-unknown}
-          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-arm64 --platform linux/arm64/v8 -f Dockerfile ${{ gitea.workspace }}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-arm64 --platform linux/arm64/v8 -f Dockerfile ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -240,7 +240,7 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-unknown}
-          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-armv7 --platform linux/arm/v7 -f Dockerfile ${{ gitea.workspace }}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-armv7 --platform linux/arm/v7 -f Dockerfile ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -304,7 +304,7 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF##*/}
           export BRANCH=${BRANCH:-unknown}
-          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-latest-riscv64 --platform linux/riscv64 -f Dockerfile ${{ gitea.workspace }}
+          docker buildx build --pull -t code.nephatrine.net/nephnet/nginx-ssl:${BRANCH}-riscv64 --platform linux/riscv64 -f Dockerfile ${{ gitea.workspace }}
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
