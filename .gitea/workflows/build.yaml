@@ -343,14 +343,14 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:latest --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.25.4 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.25 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
-          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:latest
+          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:latest --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1.25.4
           docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1.25
           docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1
+          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:latest
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
@@ -369,14 +369,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/nginx-ssl:latest --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:1.25.4 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:1.25 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:1 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
-          docker manifest push --purge nephatrine/nginx-ssl:latest
+          docker manifest create nephatrine/nginx-ssl:latest --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest push --purge nephatrine/nginx-ssl:1.25.4
           docker manifest push --purge nephatrine/nginx-ssl:1.25
           docker manifest push --purge nephatrine/nginx-ssl:1
+          docker manifest push --purge nephatrine/nginx-ssl:latest
       - name: Notify Discord
         if: gitea.event_name != 'schedule'
         uses: https://github.com/sarisia/actions-status-discord@v1
