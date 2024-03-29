@@ -2,17 +2,17 @@
 #
 # SPDX-License-Identifier: ISC
 
+# hadolint ignore=DL3007
 FROM code.nephatrine.net/nephnet/nxb-alpine:latest AS builder
 
-RUN echo "====== INSTALL LIBRARIES ======" \
- && apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
+# hadolint ignore=DL3018
+RUN apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
 
 ARG NGINX_VERSION=release-1.25.4
 RUN git -C /root clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
+WORKDIR /root/nginx
 
-RUN echo "====== COMPILE NGINX ======" \
- && cd /root/nginx \
- && ./auto/configure \
+RUN ./auto/configure \
   --prefix=/var/www \
   --sbin-path=/usr/sbin/nginx \
   --modules-path=/usr/lib/nginx/modules \
@@ -61,12 +61,13 @@ RUN echo "====== COMPILE NGINX ======" \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) install
 
+# hadolint ignore=DL3007
 FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN echo "====== INSTALL PACKAGES ======" \
- && apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
- && pip3 install --break-system-packages zope.component \
+# hadolint ignore=DL3013,DL3018
+RUN apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
+ && pip3 install --no-cache-dir --break-system-packages zope.component \
  && mkdir -p /etc/nginx /usr/lib/nginx /var/cache/nginx /var/log/nginx /var/www \
  && rm -rf /tmp/* /var/tmp/*
 
