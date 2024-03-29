@@ -61,6 +61,8 @@ RUN ./auto/configure \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) \
  && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) install
 
+# ------------------------------
+
 # hadolint ignore=DL3007
 FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
