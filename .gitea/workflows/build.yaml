@@ -48,7 +48,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure() || gitea.event_name != 'schedule'
         with:
-          title: "Container Build (X86_64; 1.25.4)"
+          title: "Container Build (X86_64; 1.26.0)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_amd64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -107,7 +107,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (I686; 1.25.4)"
+          title: "Container Build (I686; 1.26.0)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_i386:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -166,7 +166,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (AARCH64; 1.25.4)"
+          title: "Container Build (AARCH64; 1.26.0)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_arm64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -225,7 +225,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (ARMV7L; 1.25.4)"
+          title: "Container Build (ARMV7L; 1.26.0)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_armhf:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -284,7 +284,7 @@ jobs:
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Build (RISCV64; 1.25.4)"
+          title: "Container Build (RISCV64; 1.26.0)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_BUILD }}
   push_riscv64:
     if: gitea.ref_name == 'master' || gitea.ref_name == ''
@@ -318,19 +318,19 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
-          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.25.4 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
-          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.25 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
+          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.26.0 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
+          docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.26 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:latest --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
-          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1.25.4
-          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1.25
+          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1.26.0
+          docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1.26
           docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:1
           docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:latest
       - name: Notify Discord
         uses: https://github.com/sarisia/actions-status-discord@v1
         if: failure()
         with:
-          title: "Container Publish (1.25.4)"
+          title: "Container Publish (1.26.0)"
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
   push:
     needs: [push_amd64, push_i386, push_arm64, push_armhf, push_riscv64]
@@ -344,19 +344,19 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
-          docker manifest create nephatrine/nginx-ssl:1.25.4 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
-          docker manifest create nephatrine/nginx-ssl:1.25 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
+          docker manifest create nephatrine/nginx-ssl:1.26.0 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
+          docker manifest create nephatrine/nginx-ssl:1.26 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:1 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:latest --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
-          docker manifest push --purge nephatrine/nginx-ssl:1.25.4
-          docker manifest push --purge nephatrine/nginx-ssl:1.25
+          docker manifest push --purge nephatrine/nginx-ssl:1.26.0
+          docker manifest push --purge nephatrine/nginx-ssl:1.26
           docker manifest push --purge nephatrine/nginx-ssl:1
           docker manifest push --purge nephatrine/nginx-ssl:latest
       - name: Notify Discord
         if: gitea.event_name != 'schedule'
         uses: https://github.com/sarisia/actions-status-discord@v1
         with:
-          title: "DockerHub: nginx-ssl (1.25.4)"
+          title: "DockerHub: nginx-ssl (1.26.0)"
           description: "The container image was pushed to [DockerHub](https://hub.docker.com/repository/docker/nephatrine/nginx-ssl/general).\nPull `nephatrine/nginx-ssl:latest` for the newest image."
           nodetail: true
           webhook: ${{ secrets.DISCORD_WEBHOOK_PACKAGE }}
