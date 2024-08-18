@@ -318,6 +318,10 @@ jobs:
           password: ${{ secrets.PACKAGER_TOKEN }}
       - name: Docker Manifest
         run: |
+          docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:1.26.0 || true
+          docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:1.26 || true
+          docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:1 || true
+          docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:latest || true
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.26.0 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1.26 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
           docker manifest create code.nephatrine.net/nephnet/nginx-ssl:1 --amend code.nephatrine.net/nephnet/amd64:nginx-ssl --amend code.nephatrine.net/nephnet/i386:nginx-ssl --amend code.nephatrine.net/nephnet/arm64:nginx-ssl --amend code.nephatrine.net/nephnet/armv7:nginx-ssl --amend code.nephatrine.net/nephnet/riscv64:nginx-ssl
@@ -344,6 +348,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Docker Manifest
         run: |
+          docker manifest rm nephatrine/nginx-ssl:1.26.0 || true
+          docker manifest rm nephatrine/nginx-ssl:1.26 || true
+          docker manifest rm nephatrine/nginx-ssl:1 || true
+          docker manifest rm nephatrine/nginx-ssl:latest || true
           docker manifest create nephatrine/nginx-ssl:1.26.0 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:1.26 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
           docker manifest create nephatrine/nginx-ssl:1 --amend nephatrine/amd64:nginx-ssl --amend nephatrine/ia32:nginx-ssl --amend nephatrine/arm64:nginx-ssl --amend nephatrine/armv7:nginx-ssl --amend nephatrine/riscv64:nginx-ssl
