@@ -14,7 +14,7 @@ This docker container manages the NGINX application, a lightweight web server
 and reverse proxy. It includes certbot/letsencrypt for easily obtaining TLS
 certificates if your server is publicly accessible.
 
-The `latest` tag points to version `1.27.4` and this is the only image actively
+The `latest` tag points to version `1.27.5` and this is the only image actively
 being updated. There are tags for older versions, but these may no longer be
 using the latest Alpine version and packages.
 
