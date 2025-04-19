@@ -68,7 +68,7 @@ FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 # hadolint ignore=DL3013,DL3018
-RUN apk add --no-cache certbot geoip libgd libxslt pcre py3-pip \
+RUN apk add --no-cache certbot geoip libgd libxslt pcre2 py3-pip \
  && pip3 install --no-cache-dir --break-system-packages zope.component \
  && mkdir -p /etc/nginx /usr/lib/nginx /var/cache/nginx /var/log/nginx /var/www \
  && rm -rf /tmp/* /var/tmp/*
