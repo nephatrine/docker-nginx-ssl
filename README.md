@@ -37,10 +37,14 @@ and potentially customize.
 - `/mnt/config/etc/mime.types`
 - `/mnt/config/etc/nginx.conf`
 - `/mnt/config/etc/nginx.d/*`
-- `/mnt/config/www/default/*`
 
 Modifications to some of these may require a service restart to pull in the
 changes made.
+
+You can place simple html/css files in the following location to serve them with
+the default settings:
+
+- `/mnt/config/www/default/*`
 
 ### Container Variables
 
