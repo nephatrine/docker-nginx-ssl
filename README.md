@@ -1,57 +1,34 @@
 <!--
-SPDX-FileCopyrightText: 2018 - 2025 Daniel Wolf <nephatrine@gmail.com>
-
+SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
 SPDX-License-Identifier: ISC
 -->
 
-[Git](https://code.nephatrine.net/NephNET/docker-nginx-ssl/src/branch/master) |
-[Docker](https://hub.docker.com/r/nephatrine/nginx-ssl/) |
-[unRAID](https://code.nephatrine.net/NephNET/unraid-containers)
+# NGINX Reverse Proxy
 
-# NGINX Reverse Proxy/Web Server
+[![NephCode](https://img.shields.io/static/v1?label=Git&message=NephCode&color=teal)](https://code.nephatrine.net/NephNET/docker-nginx-ssl)
+[![GitHub](https://img.shields.io/static/v1?label=Git&message=GitHub&color=teal)](https://github.com/nephatrine/docker-nginx-ssl)
+[![Registry](https://img.shields.io/static/v1?label=OCI&message=NephCode&color=blue)](https://code.nephatrine.net/NephNET/-/packages/container/nginx-ssl/latest)
+[![DockerHub](https://img.shields.io/static/v1?label=OCI&message=DockerHub&color=blue)](https://hub.docker.com/repository/docker/nephatrine/nginx-ssl/general)
+[![unRAID](https://img.shields.io/static/v1?label=unRAID&message=template&color=orange)](https://code.nephatrine.net/NephNET/unraid-containers)
 
-This docker container manages the NGINX application, a lightweight web server
-and reverse proxy. It includes certbot/letsencrypt for easily obtaining TLS
-certificates if your server is publicly accessible.
+This is an Alpine-based container hosting NGINX to act as a reverse proxy
+allowing access to other containerized web applications and centralizing SSL
+configuration. You can also serve simple HTML websites with it, of course. It
+includes certbot/letsencrypt to handle SSL certificates and renewal.
 
-The `latest` tag points to version `1.27.5` and this is the only image actively
-being updated. There are tags for older versions, but these may no longer be
-using the latest Alpine version and packages.
+## Supported Tags
 
-This container is primarily intended to be used as a reverse proxy/cache to
-access other containers. You can certainly serve static content, but tools like
-PHP or MySQL are not included.
+- `nginx-ssl:1.27.5`: NGINX 1.27.5
 
-## Docker-Compose
+## Software
 
-This is an example docker-compose file:
+- [Alpine Linux](https://alpinelinux.org/)
+- [Skarnet S6](https://skarnet.org/software/s6/)
+- [s6-overlay](https://github.com/just-containers/s6-overlay)
+- [NGINX](https://nginx.org/)
+- [Certbot](https://certbot.eff.org/)
 
-```yaml
-services:
-  nginx:
-    image: nephatrine/nginx-ssl:latest
-    container_name: nginx
-    environment:
-      TZ: America/New_York
-      PUID: 1000
-      PGID: 1000
-      ADMINIP: 127.0.0.1
-      TRUSTSN: 192.168.0.0/16
-      DNSADDR: "8.8.8.8 8.8.4.4"
-      SSLEMAIL: 
-      SSLDOMAINS: 
-      B_MODULI: 4096
-      B_RSA: 4096
-      B_ECDSA: 384
-    ports:
-      - "80:80/tcp"
-      - "443:443/tcp"
-      - "443:443/udp"
-    volumes:
-      - /mnt/containers/nginx:/mnt/config
-```
-
-## Server Configuration
+## Configuration
 
 These are the configuration and data files you will likely need to be aware of
 and potentially customize.
@@ -63,3 +40,44 @@ and potentially customize.
 
 Modifications to some of these may require a service restart to pull in the
 changes made.
+
+### Container Variables
+
+- `TZ`: Time Zone (i.e. `America/New_York`)
+- `PUID`: Mounted File Owner User ID
+- `PGID`: Mounted File Owner Group ID
+- `ADMINIP`: Administrator IP
+- `TRUSTSN`: Trusted Subnet (i.e. `192.168.0.0/16`)
+- `DNSADDR`: DNS Servers (i.e. `8.8.8.8 8.8.4.4`)
+- `SSLEMAIL`: LetsEncrypt Email
+- `SSLDOMAINS`: LetsEncrypt Domains
+- `B_MODULI`: `dhparam.pem` Key Sizes
+- `B_RSA`: RSA SSL Key Size
+- `B_ECDSA`: Use ECDSA SSL Keys (0 for RSA)
+
+## Testing
+
+### docker-compose
+
+```yaml
+services:
+  nginx-ssl:
+    image: nephatrine/nginx-ssl:latest
+    container_name: nginx-ssl
+    environment:
+      TZ: America/New_York
+      PUID: 1000
+      PGID: 1000
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+      - "443:443/udp"
+    volumes:
+      - /mnt/containers/nginx-ssl:/mnt/config
+```
+
+### docker run
+
+```bash
+docker run --rm -ti code.nephatrine.net/nephnet/nginx-ssl:latest /bin/bash
+```

@@ -1,26 +1,17 @@
-# SPDX-FileCopyrightText: 2023 Daniel Wolf <nephatrine@gmail.com>
-#
-# SPDX-License-Identifier: ISC
+# SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-License-Identifier: CC0-1.0
 
 services:
-  nginx:
+  nginx-ssl:
     build: .
-    container_name: nginx
+    container_name: nginx-ssl
     environment:
       TZ: America/New_York
       PUID: 1000
       PGID: 1000
-      ADMINIP: 127.0.0.1
-      TRUSTSN: 192.168.0.0/16
-      DNSADDR: "8.8.8.8 8.8.4.4"
-      SSLEMAIL: 
-      SSLDOMAINS: 
-      B_MODULI: 4096
-      B_RSA: 4096
-      B_ECDSA: 384
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
       - "443:443/udp"
     volumes:
-      - /mnt/containers/nginx:/mnt/config
+      - /mnt/containers/nginx-ssl:/mnt/config

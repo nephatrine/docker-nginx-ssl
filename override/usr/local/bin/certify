@@ -1,7 +1,8 @@
 #!/command/with-contenv /bin/bash
-# SPDX-FileCopyrightText: 2022 - 2023 Daniel Wolf <nephatrine@gmail.com>
-#
+# SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
+
+# shellcheck shell=bash
 
 if [[ -z "${SSLDOMAINS}" && ! -d /mnt/config/ssl ]]; then
   exit 0
@@ -14,8 +15,6 @@ export CURDOMAINS=""
 
 cd /mnt/config/home || exit 1
 
-# Determine Need
-
 if [[ ! -d /mnt/config/etc/certbot ]]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/certbot
 fi
@@ -23,14 +22,13 @@ if [[ -d /mnt/config/etc/certbot ]]; then
   /bin/echo "$SSLDOMAINS" | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/certbot/requested
 fi
 if [[ -f /mnt/config/etc/certbot/configured ]]; then
-  export CURDOMAINS=$(/usr/bin/head -1 /mnt/config/etc/certbot/configured)
+  CURDOMAINS=$(/usr/bin/head -1 /mnt/config/etc/certbot/configured)
+  export CURDOMAINS
 fi
 
 if [[ -z "${SSLDOMAINS}" && -z "${CURDOMAINS}" ]]; then
   exit 0
 fi
-
-# Revoke Existing Certificates
 
 if [[ ! -d /mnt/config/log ]]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
@@ -50,8 +48,6 @@ if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" && -d /mnt/config/ssl/live ]]; then
     fi
   fi
 fi
-
-# Renew Or Create Certificates
 
 if [[ -d /mnt/config/ssl/live ]]; then
   if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -eq 0 ]]; then
