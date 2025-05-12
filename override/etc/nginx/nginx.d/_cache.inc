@@ -1,6 +1,5 @@
-# SPDX-FileCopyrightText: 2018 - 2023 Daniel Wolf <nephatrine@gmail.com>
-#
-# SPDX-License-Identifier: ISC
+# SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-License-Identifier: CC0-1.0
 
 map $remote_addr $cache_status {
 	127.0.0.1 $upstream_cache_status;
