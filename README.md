@@ -18,7 +18,8 @@ includes certbot/letsencrypt to handle SSL certificates and renewal.
 
 ## Supported Tags
 
-- `nginx-ssl:1.27.5`: NGINX 1.27.5
+- `nginx-ssl:1.28.0`: NGINX Stable 1.28.0
+- `nginx-ssl:1.27.5`: NGINX Mainline 1.27.5
 
 ## Software
 
@@ -33,7 +34,7 @@ includes certbot/letsencrypt to handle SSL certificates and renewal.
 These are the configuration and data files you will likely need to be aware of
 and potentially customize.
 
-- `/mnt/config/etc/mime.type`
+- `/mnt/config/etc/mime.types`
 - `/mnt/config/etc/nginx.conf`
 - `/mnt/config/etc/nginx.d/*`
 - `/mnt/config/www/default/*`
