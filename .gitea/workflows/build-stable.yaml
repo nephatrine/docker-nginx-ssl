@@ -61,7 +61,7 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/nginx-ssl:stable-${{matrix.nephhub}}
+          tags: code.nephatrine.net/nephnet/nginx-ssl:1.28.0-${{matrix.nephhub}}
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:nginx-ssl-stable
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:nginx-ssl-stable,mode=max
       - name: Notify Discord
@@ -111,9 +111,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:stable-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:stable-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:nginx-ssl-stable
-          docker rmi code.nephatrine.net/nephnet/nginx-ssl:stable-${{matrix.nephhub}}
+          docker pull code.nephatrine.net/nephnet/nginx-ssl:1.28.0-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
+          docker tag code.nephatrine.net/nephnet/nginx-ssl:1.28.0-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:nginx-ssl-stable
+          docker rmi code.nephatrine.net/nephnet/nginx-ssl:1.28.0-${{matrix.nephhub}}
           docker push nephatrine/${{matrix.dockerhub}}:nginx-ssl-stable
           docker rmi nephatrine/${{matrix.dockerhub}}:nginx-ssl-stable
       - name: Clean Up
@@ -152,7 +152,7 @@ jobs:
         continue-on-error: true
         id: manifest
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:stable-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-riscv64"
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-riscv64"
           for manifestName in 1.28.0 1.28 stable; do docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/nginx-ssl:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
@@ -160,7 +160,7 @@ jobs:
       - name: Retry Docker Manifest
         if: steps.manifest.outcome != 'success'
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:stable-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:stable-riscv64"
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.28.0-riscv64"
           for manifestName in 1.28.0 1.28 stable; do docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/nginx-ssl:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
