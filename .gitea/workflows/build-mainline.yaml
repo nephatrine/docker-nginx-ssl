@@ -64,7 +64,7 @@ jobs:
           pull: true
           push: true
           file: Dockerfile
-          tags: code.nephatrine.net/nephnet/nginx-ssl:1.27.5-${{matrix.nephhub}}
+          tags: code.nephatrine.net/nephnet/nginx-ssl:mainline-${{matrix.nephhub}}
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:nginx-ssl-mainline
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:nginx-ssl-mainline,mode=max
       - name: Notify Discord
@@ -114,14 +114,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Tag & Push
         run: |
-          docker pull code.nephatrine.net/nephnet/nginx-ssl:1.27.5-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
-          docker tag code.nephatrine.net/nephnet/nginx-ssl:1.27.5-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:nginx-ssl-1.27.5
-          docker rmi code.nephatrine.net/nephnet/nginx-ssl:1.27.5-${{matrix.nephhub}}
-          docker push nephatrine/${{matrix.dockerhub}}:nginx-ssl-1.27.5
-          docker rmi nephatrine/${{matrix.dockerhub}}:nginx-ssl-1.27.5
+          docker pull code.nephatrine.net/nephnet/nginx-ssl:mainline-${{matrix.nephhub}} --platform linux/${{matrix.platform}}
+          docker tag code.nephatrine.net/nephnet/nginx-ssl:mainline-${{matrix.nephhub}} nephatrine/${{matrix.dockerhub}}:nginx-ssl-mainline
+          docker rmi code.nephatrine.net/nephnet/nginx-ssl:mainline-${{matrix.nephhub}}
+          docker push nephatrine/${{matrix.dockerhub}}:nginx-ssl-mainline
+          docker rmi nephatrine/${{matrix.dockerhub}}:nginx-ssl-mainline
       - name: Clean Up
         if: failure()
-        run: docker rmi nephatrine/${{matrix.dockerhub}}:nginx-ssl-1.27.5
+        run: docker rmi nephatrine/${{matrix.dockerhub}}:nginx-ssl-mainline
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
         if: failure()
@@ -155,7 +155,7 @@ jobs:
         continue-on-error: true
         id: manifest
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-riscv64"
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:mainline-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-riscv64"
           for manifestName in 1.27.5 1.27 1 mainline latest; do docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/nginx-ssl:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
@@ -163,7 +163,7 @@ jobs:
       - name: Retry Docker Manifest
         if: steps.manifest.outcome != 'success'
         run: |
-          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:1.27.5-riscv64"
+          export IMAGELIST="--amend code.nephatrine.net/nephnet/nginx-ssl:mainline-amd64 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-ia32 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-arm64 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-arm32 --amend code.nephatrine.net/nephnet/nginx-ssl:mainline-riscv64"
           for manifestName in 1.27.5 1.27 1 mainline latest; do docker manifest rm code.nephatrine.net/nephnet/nginx-ssl:${manifestName} || true; docker manifest create code.nephatrine.net/nephnet/nginx-ssl:${manifestName} ${IMAGELIST}; docker manifest push --purge code.nephatrine.net/nephnet/nginx-ssl:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
@@ -196,7 +196,7 @@ jobs:
         continue-on-error: true
         id: manifest
         run: |
-          export IMAGELIST="--amend nephatrine/amd64:nginx-ssl-1.27.5 --amend nephatrine/ia32:nginx-ssl-1.27.5 --amend nephatrine/arm64:nginx-ssl-1.27.5 --amend nephatrine/armv7:nginx-ssl-1.27.5 --amend nephatrine/riscv64:nginx-ssl-1.27.5"
+          export IMAGELIST="--amend nephatrine/amd64:nginx-ssl-mainline --amend nephatrine/ia32:nginx-ssl-mainline --amend nephatrine/arm64:nginx-ssl-mainline --amend nephatrine/armv7:nginx-ssl-mainline --amend nephatrine/riscv64:nginx-ssl-mainline"
           for manifestName in 1.27.5 1.27 1 mainline latest; do docker manifest rm nephatrine/nginx-ssl:${manifestName} || true; docker manifest create nephatrine/nginx-ssl:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/nginx-ssl:${manifestName}; done
       - name: Wait to Retry
         if: steps.manifest.outcome != 'success'
@@ -204,7 +204,7 @@ jobs:
       - name: Retry Docker Manifest
         if: steps.manifest.outcome != 'success'
         run: |
-          export IMAGELIST="--amend nephatrine/amd64:nginx-ssl-1.27.5 --amend nephatrine/ia32:nginx-ssl-1.27.5 --amend nephatrine/arm64:nginx-ssl-1.27.5 --amend nephatrine/armv7:nginx-ssl-1.27.5 --amend nephatrine/riscv64:nginx-ssl-1.27.5"
+          export IMAGELIST="--amend nephatrine/amd64:nginx-ssl-mainline --amend nephatrine/ia32:nginx-ssl-mainline --amend nephatrine/arm64:nginx-ssl-mainline --amend nephatrine/armv7:nginx-ssl-mainline --amend nephatrine/riscv64:nginx-ssl-mainline"
           for manifestName in 1.27.5 1.27 1 mainline latest; do docker manifest rm nephatrine/nginx-ssl:${manifestName} || true; docker manifest create nephatrine/nginx-ssl:${manifestName} ${IMAGELIST}; docker manifest push --purge nephatrine/nginx-ssl:${manifestName}; done
       - name: Notify Discord
         uses: https://code.nephatrine.net/NephHub/actions-status-discord@v1
