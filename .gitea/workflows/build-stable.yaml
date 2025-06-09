@@ -5,7 +5,7 @@ name: Build Container Image
 run-name: ${{ gitea.actor }} pushed to ${{ gitea.repository }}:${{ gitea.ref_name }}
 on:
   schedule:
-    - cron: "TZ=America/New_York 0 8 * * 4"
+    - cron: "TZ=America/New_York 0 14 * * 3"
 jobs:
   build_images:
     if: gitea.repository_owner == 'NephNET' && (!(startsWith(gitea.event.head_commit.message, 'chore') || startsWith(gitea.event.head_commit.message, 'docs') || startsWith(gitea.event.head_commit.message, 'style')) || gitea.event_name == 'schedule')
