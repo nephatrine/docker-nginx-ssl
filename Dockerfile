@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
-# hadolint global ignore=DL3007,DL3013,DL3018
+# hadolint global ignore=DL3013,DL3018
 
+# hadolint ignore=DL3007
 FROM code.nephatrine.net/nephnet/nxb-alpine:latest AS builder
 
 RUN apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
@@ -23,6 +24,7 @@ RUN ./auto/configure \
   && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) \
   && make -j$(( $(getconf _NPROCESSORS_ONLN) / 2 + 1 )) install
 
+# hadolint ignore=DL3007
 FROM code.nephatrine.net/nephnet/alpine-s6:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
