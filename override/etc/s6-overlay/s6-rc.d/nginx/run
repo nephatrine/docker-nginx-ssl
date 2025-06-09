@@ -1,16 +1,16 @@
-#!/command/with-contenv /bin/bash
+#!/command/with-contenv /bin/sh
 # SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
-# shellcheck shell=bash
+# shellcheck shell=sh
 # shellcheck disable=SC2002
 
 export HOME=/mnt/config/home
-export DOMAINNAME=${SSLPRIMARY:-"example.net"}
-export ADMINIP=${ADMINIP:-"127.0.0.1"}
-export DNSADDR=${DNSADDR:-"8.8.8.8 8.8.4.4"}
-export TRUSTSN=${TRUSTSN:-"192.168.0.0/16"}
-export B_MODULI=${B_MODULI:-4096}
+export DOMAINNAME="${SSLPRIMARY:-example.net}"
+export ADMINIP="${ADMINIP:-127.0.0.1}"
+export DNSADDR="${DNSADDR:-8.8.8.8 8.8.4.4}"
+export TRUSTSN="${TRUSTSN:-192.168.0.0/16}"
+export B_MODULI="${B_MODULI:-4096}"
 
 THISIP=$(/sbin/ifconfig | /bin/grep 'inet addr' | /usr/bin/head -1 | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $3}')
 export THISIP
@@ -31,18 +31,18 @@ cd /mnt/config/home || exit 1
 
 # Build Configuration
 
-if [[ ! -d /mnt/config/etc/nginx.d ]]; then
+if [ ! -d /mnt/config/etc/nginx.d ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/nginx.d
 fi
 for NGF in /etc/nginx/nginx.d/*; do
   NGE=/mnt/config/etc/nginx.d/$(/usr/bin/basename -- "$NGF")
-  if [[ ! -f ${NGE} ]]; then
+  if [ ! -f "${NGE}" ]; then
     /command/s6-setuidgid guardian /bin/cp "${NGF}" "${NGE}"
     /bin/sed -i -e "s/127.0.0.1/${ADMINIP}/g" "${NGE}"
     /bin/sed -i -e "s/example.net/${DOMAINNAME}/g" "${NGE}"
     /bin/sed -i -e "s~ip_from 192.168.0.0/16~ip_from ${TRSTIP}/${TRSTPF}~g" "${NGE}"
     /bin/sed -i -e "s~allow 192.168.0.0/16~allow ${TRUSTSN}~g" "${NGE}"
-    if [[ -n "${SSLPRIMARY}" ]]; then
+    if [ -n "${SSLPRIMARY}" ]; then
       /bin/sed -i -e 's/#NOSSL:/#/g' "${NGE}"
       /bin/sed -i -e 's/#SSL://g' "${NGE}"
     else
@@ -52,10 +52,10 @@ for NGF in /etc/nginx/nginx.d/*; do
   fi
 done
 
-if [[ ! -f /mnt/config/etc/nginx.conf ]]; then
+if [ ! -f /mnt/config/etc/nginx.conf ]; then
   /command/s6-setuidgid guardian /bin/cp /etc/nginx/nginx.conf /mnt/config/etc/nginx.conf
   /bin/sed -i -e "s~8.8.8.8 8.8.4.4~${DNSADDR}~g" /mnt/config/etc/nginx.conf
-  if [[ -n "${SSLPRIMARY}" ]]; then
+  if [ -n "${SSLPRIMARY}" ]; then
     /bin/sed -i -e 's/#NOSSL:/#/g' /mnt/config/etc/nginx.conf
     /bin/sed -i -e 's/#SSL://g' /mnt/config/etc/nginx.conf
   else
@@ -64,52 +64,52 @@ if [[ ! -f /mnt/config/etc/nginx.conf ]]; then
   fi
 fi
 
-if [[ -n "${SSLPRIMARY}" ]]; then
-  if [[ ! -d /mnt/config/ssl ]]; then
+if [ -n "${SSLPRIMARY}" ]; then
+  if [ ! -d /mnt/config/ssl ]; then
     /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/ssl
     /command/s6-setuidgid guardian /bin/chmod 700 /mnt/config/ssl
   fi
-  if [[ ! -f /mnt/config/ssl/dhparam.pem ]]; then
+  if [ ! -f /mnt/config/ssl/dhparam.pem ]; then
     /command/s6-setuidgid guardian /usr/bin/openssl dhparam -out /mnt/config/ssl/dhparam.pem "${B_MODULI}"
   fi
 fi
 
-if [[ ! -f /mnt/config/etc/mime.types ]]; then
+if [ ! -f /mnt/config/etc/mime.types ]; then
   /command/s6-setuidgid guardian /bin/cp /etc/nginx/mime.types /mnt/config/etc/mime.types
 fi
 
 # Create Log Directory
 
-if [[ ! -d /mnt/config/log ]]; then
+if [ ! -d /mnt/config/log ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
 fi
-if [[ -f /mnt/config/log/nginx-access.log ]]; then
+if [ -f /mnt/config/log/nginx-access.log ]; then
   /bin/chown guardian:users /mnt/config/log/nginx-access.log
 else
   /command/s6-setuidgid guardian /bin/touch /mnt/config/log/nginx-access.log
 fi
-if [[ -f /mnt/config/log/nginx-error.log ]]; then
+if [ -f /mnt/config/log/nginx-error.log ]; then
   /bin/chown guardian:users /mnt/config/log/nginx-error.log
 else
   /command/s6-setuidgid guardian /bin/touch /mnt/config/log/nginx-error.log
 fi
-if [[ -f /var/log/nginx/error.log ]]; then
+if [ -f /var/log/nginx/error.log ]; then
   /bin/cat /var/log/nginx/error.log | /command/s6-setuidgid guardian /usr/bin/tee -a /mnt/config/log/nginx-error.log
   /bin/rm -f /var/log/nginx/error.log
 fi
 
 # Create Web Directory
 
-if [[ ! -d /mnt/config/www ]]; then
+if [ ! -d /mnt/config/www ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/www/default
-  if [[ -d /mnt/config/www ]]; then
+  if [ -d /mnt/config/www ]; then
     /command/s6-setuidgid guardian /bin/cp -Rn /var/www/html/* /mnt/config/www/default/
   fi
 fi
 
 # Start Service
 
-if [[ -f /mnt/config/etc/nginx.conf ]]; then
+if [ -f /mnt/config/etc/nginx.conf ]; then
   exec /usr/sbin/nginx -c /mnt/config/etc/nginx.conf;
 else
   /bin/echo "** no config exists **"

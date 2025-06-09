@@ -4,54 +4,54 @@
 
 # shellcheck shell=bash
 
-if [[ -z "${SSLDOMAINS}" && ! -d /mnt/config/ssl ]]; then
+if [ -z "${SSLDOMAINS}" ] && [ ! -d /mnt/config/ssl ]; then
   exit 0
 fi
 
 export HOME=/mnt/config/home
-export B_RSA=${B_RSA:-4096}
-export B_ECDSA=${B_ECDSA:-384}
+export B_RSA="${B_RSA:-4096}"
+export B_ECDSA="${B_ECDSA:-384}"
 export CURDOMAINS=""
 
 cd /mnt/config/home || exit 1
 
-if [[ ! -d /mnt/config/etc/certbot ]]; then
+if [ ! -d /mnt/config/etc/certbot ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/etc/certbot
 fi
-if [[ -d /mnt/config/etc/certbot ]]; then
+if [ -d /mnt/config/etc/certbot ]; then
   /bin/echo "$SSLDOMAINS" | /command/s6-setuidgid guardian /usr/bin/tee /mnt/config/etc/certbot/requested
 fi
-if [[ -f /mnt/config/etc/certbot/configured ]]; then
+if [ -f /mnt/config/etc/certbot/configured ]; then
   CURDOMAINS=$(/usr/bin/head -1 /mnt/config/etc/certbot/configured)
   export CURDOMAINS
 fi
 
-if [[ -z "${SSLDOMAINS}" && -z "${CURDOMAINS}" ]]; then
+if [ -z "${SSLDOMAINS}" ] && [ -z "${CURDOMAINS}" ]; then
   exit 0
 fi
 
-if [[ ! -d /mnt/config/log ]]; then
+if [ ! -d /mnt/config/log ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/log
 fi
-if [[ ! -d /mnt/config/ssl/live ]]; then
+if [ ! -d /mnt/config/ssl/live ]; then
   /command/s6-setuidgid guardian /bin/mkdir -p /mnt/config/ssl/live
 fi
-if [[ -f /mnt/config/ssl/live/README ]]; then
+if [ -f /mnt/config/ssl/live/README ]; then
   /bin/rm -f /mnt/config/ssl/live/README
 fi
-if [[ "x$SSLDOMAINS" != "x$CURDOMAINS" && -d /mnt/config/ssl/live ]]; then
-  if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]]; then
+if [ ! "$SSLDOMAINS" = "$CURDOMAINS" ] && [ -d /mnt/config/ssl/live ]; then
+  if [ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]; then
     /bin/ls /mnt/config/ssl/live | /usr/bin/xargs -n1 -I{} /command/s6-setuidgid guardian /usr/bin/certbot revoke -n --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --cert-path "/mnt/config/ssl/live/{}/fullchain.pem" --reason superseded --work-dir /tmp/certbot
     /bin/ls /mnt/config/ssl/live | /usr/bin/xargs -n1 -I{} /command/s6-setuidgid guardian /usr/bin/certbot delete -n --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --cert-name "{}" --work-dir /tmp/certbot
-    if [[ -f /mnt/config/etc/certbot/configured ]]; then
+    if [ -f /mnt/config/etc/certbot/configured ]; then
       /bin/rm -rf /mnt/config/etc/certbot/configured
     fi
   fi
 fi
 
-if [[ -d /mnt/config/ssl/live ]]; then
+if [ -d /mnt/config/ssl/live ]; then
   if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -eq 0 ]]; then
-    if [[ -n "$SSLDOMAINS" && $SSLEMAIL == *@* && -f /mnt/config/etc/certbot/requested ]]; then
+    if [[ -n "$SSLDOMAINS" && $SSLEMAIL = *@* && -f /mnt/config/etc/certbot/requested ]]; then
       if [[ ${B_ECDSA} -gt 0 ]]; then
         /command/s6-setuidgid guardian /usr/bin/certbot certonly -n --agree-tos --key-type ecdsa --keep --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --email "$SSLEMAIL" --standalone -d "$SSLDOMAINS" --work-dir /tmp/certbot
       else

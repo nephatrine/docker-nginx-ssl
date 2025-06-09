@@ -4,13 +4,13 @@
 
 # shellcheck shell=bash
 
-if [[ -z "${SSLDOMAINS}" && ! -d /mnt/config/ssl ]]; then
+if [ -z "${SSLDOMAINS}" ] && [ ! -d /mnt/config/ssl ]; then
   exit 0
 fi
 
 export HOME=/mnt/config/home
-export B_RSA=${B_RSA:-4096}
-export B_ECDSA=${B_ECDSA:-384}
+export B_RSA="${B_RSA:-4096}"
+export B_ECDSA="${B_ECDSA:-384}"
 
 cd /mnt/config/home || exit 1
 if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]]; then
