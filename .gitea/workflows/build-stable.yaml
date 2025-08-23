@@ -212,3 +212,17 @@ jobs:
         with:
           title: "FAIL: push_manifest (stable)"
           webhook: ${{ secrets.DISCORD_WH_CONTAINERS }}
+  update_readme:
+    needs: [push_manifest]
+    runs-on: nephnet-fast
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: https://code.nephatrine.net/NephHub/checkout@v4
+      - name: Docker Describe
+        continue-on-error: true
+        uses: https://github.com/peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+          repository: nephatrine/nginx-ssl
