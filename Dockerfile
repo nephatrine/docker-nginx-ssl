@@ -8,7 +8,7 @@ FROM code.nephatrine.net/nephnet/nxb-alpine:latest AS builder
 
 RUN apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
 
-ARG NGINX_VERSION=release-1.29.0
+ARG NGINX_VERSION=release-1.29.1
 RUN git -C /root clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
 WORKDIR /root/nginx
 
