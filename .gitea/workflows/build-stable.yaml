@@ -63,7 +63,7 @@ jobs:
           provenance: false
           pull: true
           push: true
-          file: Dockerfile
+          file: Dockerfile.stable
           tags: code.nephatrine.net/nephnet/nginx-ssl:1.28.0-${{matrix.nephhub}}
           cache-from: type=registry,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:nginx-ssl-stable
           cache-to: type=registry,image-manifest=true,oci-mediatypes=true,ref=code.nephatrine.net/nephhub/${{matrix.nephhub}}-cache:nginx-ssl-stable,mode=max
