@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
+SPDX-FileCopyrightText: 2018-2026 Daniel Wolf <nephatrine@gmail.com>
 SPDX-License-Identifier: ISC
 -->
 
@@ -19,7 +19,7 @@ includes certbot/letsencrypt to handle SSL certificates and renewal.
 ## Supported Tags
 
 - `nginx-ssl:1.29.1`: NGINX Mainline 1.29.1
-- `nginx-ssl:1.28.0`: NGINX Stable 1.28.0
+- `nginx-ssl:1.28.1`: NGINX Stable 1.28.1
 
 ## Software
 

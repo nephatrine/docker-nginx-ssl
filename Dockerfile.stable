@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2018-2026 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 # hadolint global ignore=DL3007,DL3013,DL3018
@@ -7,7 +7,7 @@ FROM code.nephatrine.net/nephnet/nxb-alpine:latest AS builder
 
 RUN apk add --no-cache gd-dev geoip-dev libatomic_ops-dev libxslt-dev pcre-dev
 
-ARG NGINX_VERSION=release-1.28.0
+ARG NGINX_VERSION=release-1.28.1
 RUN git -C /root clone -b "$NGINX_VERSION" --single-branch --depth=1 https://github.com/nginx/nginx.git
 WORKDIR /root/nginx
 
