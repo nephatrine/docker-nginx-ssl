@@ -4,36 +4,19 @@ SPDX-PackageSupplier = "Daniel Wolf <nephatrine@gmail.com>"
 SPDX-PackageDownloadLocation = "https://code.nephatrine.net/NephNET/docker-nginx-ssl"
 
 [[annotations]]
-path = [".vscode/*"]
-SPDX-FileCopyrightText = "Daniel Wolf <nephatrine@gmail.com>"
-SPDX-License-Identifier = "CC0-1.0"
-
-[[annotations]]
-path = "override/etc/s6-overlay/s6-rc.d/certbot/dependencies.d/*"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "NONE"
-SPDX-License-Identifier = "CC0-1.0"
-
-[[annotations]]
-path = "override/etc/s6-overlay/s6-rc.d/nginx/dependencies.d/*"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "NONE"
-SPDX-License-Identifier = "CC0-1.0"
-
-[[annotations]]
-path = "override/etc/s6-overlay/s6-rc.d/certbot/type"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "NONE"
-SPDX-License-Identifier = "CC0-1.0"
-
-[[annotations]]
-path = "override/etc/s6-overlay/s6-rc.d/nginx/type"
+path = "override/etc/s6-overlay/s6-rc.d/*/dependencies.d/*"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "NONE"
 SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
 path = "override/etc/s6-overlay/s6-rc.d/user/contents.d/*"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "override/etc/s6-overlay/s6-rc.d/*/type"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "NONE"
 SPDX-License-Identifier = "CC0-1.0"
