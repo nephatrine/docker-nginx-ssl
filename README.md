@@ -20,7 +20,7 @@ includes certbot/letsencrypt to handle SSL certificates and renewal.
 ## Supported Tags
 
 - `nginx-ssl:1.29.8`: NGINX Mainline 1.29.8
-- `nginx-ssl:1.28.2`: NGINX Stable 1.28.3
+- `nginx-ssl:1.30.0`: NGINX Stable 1.30.0
 
 ## Software
 
