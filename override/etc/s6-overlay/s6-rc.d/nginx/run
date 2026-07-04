@@ -12,19 +12,21 @@ export DNSADDR="${DNSADDR:-8.8.8.8 8.8.4.4}"
 export TRUSTSN="${TRUSTSN:-192.168.0.0/16}"
 export B_MODULI="${B_MODULI:-4096}"
 
-THISIP=$(/sbin/ifconfig | /bin/grep 'inet addr' | /usr/bin/head -1 | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $3}')
-export THISIP
-
-THISSN=$(/sbin/ifconfig | /bin/grep 'inet addr' | /usr/bin/head -1 | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $7}')
-export THISSN
-
-TRSTIP=$(/bin/ipcalc -n "$THISIP" "$THISSN" | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}')
-export TRSTIP
-
-TRSTPF=$(/bin/ipcalc -p "$THISIP" "$THISSN" | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}')
-export TRSTPF
-
+if [ -x /sbin/ip ]; then
+	THISIP=$(/sbin/ip addr | /bin/grep 'inet ' | /bin/grep -v '127.0.0.1' | /usr/bin/head -1 | /usr/bin/tr '/' ' ' | /usr/bin/awk '{print $2}')
+	THISPF=$(/sbin/ip addr | /bin/grep 'inet ' | /bin/grep -v '127.0.0.1' | /usr/bin/head -1 | /usr/bin/tr '/' ' ' | /usr/bin/awk '{print $3}')
+	TRSTIP=$(/bin/ipcalc -n "$THISIP/$THISPF" | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}')
+	TRSTPF=$(/bin/ipcalc -p "$THISIP/$THISPF" | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}')
+else
+	THISIP=$(/sbin/ifconfig | /bin/grep 'inet addr' | /bin/grep -v '127.0.0.1' | /usr/bin/head -1 | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $3}')
+	THISSN=$(/sbin/ifconfig | /bin/grep 'inet addr' | /bin/grep -v '127.0.0.1' | /usr/bin/head -1 | /usr/bin/tr ':' ' ' | /usr/bin/awk '{print $7}')
+	TRSTIP=$(/bin/ipcalc -n "$THISIP" "$THISSN" | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}')
+	TRSTPF=$(/bin/ipcalc -p "$THISIP" "$THISSN" | /usr/bin/tr '=' ' ' | /usr/bin/awk '{print $2}')
+fi
 SSLPRIMARY=$(echo "$SSLDOMAINS" | /usr/bin/tr ',' ' ' | /usr/bin/awk '{print $1}')
+
+export TRSTIP
+export TRSTPF
 export SSLPRIMARY
 
 cd /mnt/config/home || exit 1
