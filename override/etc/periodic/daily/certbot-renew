@@ -1,11 +1,11 @@
 #!/command/with-contenv /bin/bash
-# SPDX-FileCopyrightText: 2018-2025 Daniel Wolf <nephatrine@gmail.com>
+# SPDX-FileCopyrightText: 2018-2026 Daniel Wolf <nephatrine@gmail.com>
 # SPDX-License-Identifier: ISC
 
 # shellcheck shell=bash
 
 if [ -z "${SSLDOMAINS}" ] && [ ! -d /mnt/config/ssl ]; then
-  exit 0
+	exit 0
 fi
 
 export HOME=/mnt/config/home
@@ -14,9 +14,11 @@ export B_ECDSA="${B_ECDSA:-384}"
 
 cd /mnt/config/home || exit 1
 if [[ $(/bin/ls /mnt/config/ssl/live | /usr/bin/wc -l) -gt 0 ]]; then
-  if [[ ${B_ECDSA} -gt 0 ]]; then
-    /command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --key-type ecdsa --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
-  else
-    /command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --rsa-key-size "${B_RSA}" --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
-  fi
+	if [[ ${B_ECDSA} -gt 0 ]]; then
+		/command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --key-type ecdsa --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
+	else
+		/command/s6-setuidgid guardian /usr/bin/certbot renew -n --agree-tos --rsa-key-size "${B_RSA}" --config-dir /mnt/config/ssl --logs-dir /mnt/config/log --max-log-backups 0 --work-dir /tmp/certbot
+	fi
 fi
+
+# vim:ft=sh
